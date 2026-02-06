@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ISONOMIA | Die kognitive Wende</title>
+    <style>
+        /* DESIGN-DNA: NEO-BRUTALISMUS & DIGITAL SOVEREIGNTY */
+        :root {
+            --bg: #050505;
+            --cyan: #00FFCC;
+            --magenta: #FF3366;
+            --text: #ffffff;
+            --dim-text: rgba(255, 255, 255, 0.5);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-main);
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* PARTIKEL-FELD (DAS VOLK) */
+        #particle-container {
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: 1; pointer-events: none;
+        }
+
+        .dot {
+            position: absolute; width: 4px; height: 4px;
+            background: var(--cyan); border-radius: 50%;
+            opacity: 0.4; box-shadow: 0 0 10px var(--cyan);
+            will-change: transform, opacity;
+        }
+
+        /* NARRATIVE LAYER (GANDALF) */
+        #stage {
+            position: relative; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw;
+            background: radial-gradient(circle at center, rgba(0,255,204,0.02) 0%, transparent 70%);
+        }
+
+        .message-box {
+            max-width: 850px; padding: 3rem;
+            text-align: center;
+            filter: drop-shadow(0 0 30px rgba(0,0,0,0.8));
+        }
+
+        .gandalf-voice h1 {
+            font-weight: 300; font-size: 2.6rem; line-height: 1.2;
+            letter-spacing: -1px; margin-bottom: 3.5rem;
+            text-shadow: 0 0 20px rgba(0, 255, 204, 0.1);
+        }
+
+        .button-group {
+            display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+        }
+
+        /* HAPTISCHE INTERAKTION */
+        .haptic-btn {
+            background: rgba(0, 255, 204, 0.03);
+            border: 1px solid var(--cyan);
+            color: var(--cyan);
+            padding: 1.2rem 2.8rem;
+            font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 3px;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative; overflow: hidden;
+        }
+
+        .haptic-btn:hover {
+            background: var(--cyan); color: var(--bg);
+            box-shadow: 0 0 50px var(--cyan);
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        /* RESOURCE VAULT END-STATE */
+        .vault-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem; margin-top: 3rem;
+        }
+
+        .vault-item {
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 1.5rem; color: var(--text);
+            text-decoration: none; font-size: 0.9rem;
+            transition: 0.3s; background: rgba(255,255,255,0.02);
+        }
+
+        .vault-item:hover {
+            border-color: var(--cyan); background: rgba(0, 255, 204, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            .gandalf-voice h1 { font-size: 1.8rem; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="particle-container"></div>
+
+    <main id="stage">
+        <div id="content-layer" class="message-box">
+            </div>
+    </main>
+
+    <script src="anime.js"></script>
+    <script>
+        /**
+         * ISONOMIA MASTER ENGINE v1.0
+         * Architektur: Unidirektionale State-Machine mit GfK-Recursion
+         */
+
+        const narrativeData = {
+            "start": {
+                "text": "Schön, dass du da bist. Wir sitzen hier am Küchentisch der Vernunft. Du bist jemand, der Verantwortung trägt – jemand, dem dieses Land wichtig ist. Stimmt das?",
+                "options": [
+                    { "label": "Ja, absolut", "next": "hook", "impact": "agree" },
+                    { "label": "Ich bin skeptisch", "next": "skeptic", "impact": "skeptic" }
+                ],
+                "visual": { "mode": "breathe" }
+            },
+            "skeptic": {
+                "text": "Verständlich. Skepsis ist der Schutzschild der Vernunft. Man hat uns oft genug enttäuscht. Bleib skeptisch – aber bleib kurz hier. Denn genau darum geht es.",
+                "options": [
+                    { "label": "Erzähl mir mehr", "next": "hook", "impact": "agree" }
+                ],
+                "visual": { "mode": "tremble" }
+            },
+            "hook": {
+                "text": "Man sagt uns, Wahlen seien der Schutzwall gegen Diktatoren. Aber hast du dich mal gefragt: Warum kamen die schlimmsten Tyrannen der Geschichte fast immer durch Wahlen an die Macht?",
+                "options": [
+                    { "label": "Warum ist das so?", "next": "path_parties_start", "impact": "agree" }
+                ],
+                "visual": { "mode": "chaos" }
+            },
+            "path_parties_start": {
+                "text": "Schau dir diesen täglichen Kampf an. Links gegen Rechts. Hast du auch das Gefühl, dass dieser Streit uns als Menschen eher trennt, als dass er echte Lösungen bringt?",
+                "options": [
+                    { "label": "Ja, es ist nur noch ermüdend", "next": "party_internal_logic" },
+                    { "label": "Streit gehört dazu", "next": "nvc_validation_conflict", "impact": "skeptic" }
+                ],
+                "visual": { "mode": "clash" }
+            },
+            "nvc_validation_conflict": {
+                "text": "Ich höre dich. Ein Wettbewerb der Ideen ist lebensnotwendig. Aber spürst du aktuell wirklich noch Ideen – oder eher einen Krieg, bei dem es nur noch darum geht, den anderen als 'böse' darzustellen?",
+                "options": [
+                    { "label": "Es fühlt sich wie Krieg an", "next": "party_internal_logic" }
+                ],
+                "visual": { "mode": "tremble" }
+            },
+            "party_internal_logic": {
+                "text": "Das Geheimnis ist: Parteien sind intern wie kleine Diktaturen organisiert. Wer nach oben will, muss taktieren. Ein System, das intern unfrei ist, kann nach außen niemals Freiheit erzeugen.",
+                "options": [
+                    { "label": "Wie kommen wir da raus?", "next": "intro_isonomia_logic" }
+                ],
+                "visual": { "mode": "entropy" }
+            },
+            "intro_isonomia_logic": {
+                "text": "Stell dir vor, es gäbe keine 'Politiker' mehr. Nur noch uns. Wir regieren uns selbst, abwechselnd, unbestechlich durch das Los. Das ist Mathematik. Das ist Isonomie.",
+                "options": [
+                    { "label": "Zeig mir das System", "next": "final_manifestation" }
+                ],
+                "visual": { "mode": "stochastic" }
+            },
+            "final_manifestation": {
+                "text": "Hier endet der Streit. Hier beginnt die Freiheit. Die Macht konzentriert sich nicht mehr – sie fließt beständig zwischen uns allen.",
+                "options": [
+                    { "label": "Zum Ressourcen-Vault", "next": "vault" }
+                ],
+                "visual": { "mode": "reset_to_grid" }
+            }
+        };
+
+        const ISONOMIA = {
+            dots: [],
+            dotCount: 180,
+
+            init() {
+                const container = document.getElementById('particle-container');
+                for (let i = 0; i < this.dotCount; i++) {
+                    const d = document.createElement('div');
+                    d.className = 'dot';
+                    container.appendChild(d);
+                    this.dots.push(d);
+                }
+                // Unidirektionaler Lock
+                window.history.pushState(null, "", window.location.href);
+                window.onpopstate = () => window.history.pushState(null, "", window.location.href);
+                
+                this.transition('start');
+            },
+
+            transition(stepKey) {
+                const data = narrativeData[stepKey];
+                if (stepKey === 'vault') return this.showVault();
+
+                const ui = document.getElementById('content-layer');
+                
+                anime.timeline({ easing: 'easeInOutQuad' })
+                .add({
+                    targets: ui, opacity: 0, translateY: -20, duration: 600,
+                    complete: () => {
+                        this.renderContent(data, stepKey);
+                        this.applyVisualMode(data.visual.mode);
+                    }
+                })
+                .add({ targets: ui, opacity: 1, translateY: 0, duration: 800 });
+            },
+
+            renderContent(data, stepKey) {
+                const ui = document.getElementById('content-layer');
+                ui.innerHTML = `
+                    <div class="gandalf-voice">
+                        <h1>${data.text}</h1>
+                        <div class="button-group">
+                            ${data.options.map(o => `
+                                <button class="haptic-btn" onclick="ISONOMIA.transition('${o.next}')">${o.label}</button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            applyVisualMode(mode) {
+                anime.remove('.dot');
+                
+                if (mode === 'breathe') {
+                    anime({
+                        targets: '.dot',
+                        left: () => anime.random(0, 100) + 'vw',
+                        top: () => anime.random(0, 100) + 'vh',
+                        scale: [1, 1.4, 1],
+                        opacity: [0.2, 0.5, 0.2],
+                        delay: anime.stagger(10),
+                        duration: 4000,
+                        loop: true
+                    });
+                }
+
+                if (mode === 'tremble') {
+                    anime({
+                        targets: '.dot',
+                        translateX: () => anime.random(-3, 3),
+                        translateY: () => anime.random(-3, 3),
+                        duration: 100,
+                        loop: true,
+                        direction: 'alternate'
+                    });
+                }
+
+                if (mode === 'chaos') {
+                    anime({
+                        targets: '.dot',
+                        translateX: () => anime.random(-50, 50) + 'vw',
+                        translateY: () => anime.random(-50, 50) + 'vh',
+                        backgroundColor: '#FF3366',
+                        duration: 3000,
+                        easing: 'easeOutExpo'
+                    });
+                }
+
+                if (mode === 'clash') {
+                    this.dots.forEach((dot, i) => {
+                        const isLeft = i % 2 === 0;
+                        anime({
+                            targets: dot,
+                            left: isLeft ? anime.random(5, 35) + 'vw' : anime.random(65, 95) + 'vw',
+                            top: anime.random(10, 90) + 'vh',
+                            backgroundColor: isLeft ? '#00FFCC' : '#FF3366',
+                            duration: 2000,
+                            easing: 'spring(1, 80, 10, 0)'
+                        });
+                    });
+                }
+
+                if (mode === 'entropy') {
+                    anime({
+                        targets: '.dot',
+                        scale: 0.5,
+                        opacity: 0.1,
+                        translateX: () => anime.random(-500, 500),
+                        translateY: () => anime.random(-500, 500),
+                        duration: 2500
+                    });
+                }
+
+                if (mode === 'stochastic') {
+                    anime({
+                        targets: '.dot',
+                        left: '50vw', top: '50vh',
+                        scale: [0, 1.5, 0.8],
+                        opacity: [0, 0.8, 0.4],
+                        translateX: () => (Math.random() - 0.5) * 600,
+                        translateY: () => (Math.random() - 0.5) * 600,
+                        backgroundColor: '#00FFCC',
+                        delay: anime.stagger(10),
+                        duration: 3000
+                    });
+                }
+
+                if (mode === 'reset_to_grid') {
+                    // DER RESET-MOMENT (STILLE)
+                    anime.timeline()
+                    .add({ targets: '.dot', opacity: 0, scale: 0, duration: 1000 })
+                    .add({
+                        targets: '.dot',
+                        opacity: 0.6, scale: 1,
+                        left: (el, i) => (10 + (i % 15) * 6) + 'vw',
+                        top: (el, i) => (10 + Math.floor(i / 15) * 7) + 'vh',
+                        duration: 2000,
+                        delay: anime.stagger(20, {from: 'center'})
+                    });
+                }
+            },
+
+            showVault() {
+                const ui = document.getElementById('content-layer');
+                ui.innerHTML = `
+                    <div class="gandalf-voice">
+                        <h1>Wahrheits-Referenzen</h1>
+                        <p>Die Isonomie ist keine Utopie. Sie ist die einzige technische Lösung gegen den systemischen Kollaps.</p>
+                        <div class="vault-grid">
+                            <a href="#" class="vault-item">Argumentations-Matrix (PDF)</a>
+                            <a href="#" class="vault-item">Das Trugbild der Moderne</a>
+                            <a href="#" class="vault-item">Bollwerk gegen Faschismus</a>
+                            <a href="#" class="vault-item">Technisches Kronos-Dossier</a>
+                        </div>
+                        <br><br>
+                        <button class="haptic-btn" onclick="location.reload()">Journey neu starten</button>
+                    </div>
+                `;
+                this.applyVisualMode('reset_to_grid');
+            }
+        };
+
+        window.onload = () => ISONOMIA.init();
+    </script>
+</body>
+</html>
