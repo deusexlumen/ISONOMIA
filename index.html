@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ISONOMIA | Die kognitive Wende</title>
+    <title>ISONOMIA | Projekt Kronos</title>
     <style>
         :root {
             --bg: #050505;
@@ -11,7 +11,7 @@
             --magenta: #FF3366;
             --white: #FFFFFF;
             --text: #ffffff;
-            --dim-text: rgba(255, 255, 255, 0.5);
+            --dim-text: rgba(255, 255, 255, 0.4);
             --font-main: 'Inter', -apple-system, sans-serif;
         }
 
@@ -27,19 +27,21 @@
         #stage { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; height: 100vh; width: 100vw; }
         .message-box { max-width: 850px; padding: 3rem; text-align: center; }
 
-        .gandalf-voice h1 { font-weight: 300; font-size: 2.4rem; line-height: 1.3; letter-spacing: -1px; margin-bottom: 3.5rem; text-shadow: 0 0 20px rgba(0, 255, 204, 0.1); }
+        .gandalf-voice h1 { font-weight: 300; font-size: 2.2rem; line-height: 1.4; letter-spacing: -0.5px; margin-bottom: 3.5rem; text-shadow: 0 0 20px rgba(0, 255, 204, 0.1); }
         .button-group { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
 
         .haptic-btn {
             background: rgba(0, 255, 204, 0.03); border: 1px solid var(--cyan); color: var(--cyan);
             padding: 1.2rem 2.8rem; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;
             letter-spacing: 3px; cursor: pointer; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            position: relative;
         }
         .haptic-btn:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 50px var(--cyan); transform: translateY(-5px); }
 
         .vault-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
-        .vault-item { border: 1px solid var(--dim-text); padding: 1rem; color: white; text-decoration: none; transition: 0.3s; }
+        .vault-item { border: 1px solid var(--dim-text); padding: 1.5rem; color: white; text-decoration: none; transition: 0.3s; background: rgba(255,255,255,0.02); text-align: left; }
         .vault-item:hover { border-color: var(--cyan); background: rgba(0, 255, 204, 0.1); }
+        .vault-item span { display: block; font-size: 0.7rem; color: var(--dim-text); margin-top: 0.5rem; }
     </style>
 </head>
 <body>
@@ -48,9 +50,13 @@
 
     <script src="anime.js"></script>
     <script>
+        /**
+         * NARRATIVE DATASET: PROJEKT KRONOS
+         * Dialektische Knotenpunkte basierend auf der Systemdiagnose.
+         */
         const narrativeData = {
             "start": {
-                "text": "Schön, dass du da bist. Wir sitzen hier am Küchentisch der Vernunft. Du trägst Verantwortung – für dich und dieses Land. Stimmt das?",
+                "text": "Schön, dass du da bist. Wir sitzen hier am Küchentisch der Vernunft. Du bist jemand, der Verantwortung trägt – jemand, dem dieses Land wichtig ist. Stimmt das?",
                 "options": [
                     { "label": "Ja, absolut", "next": "hook" },
                     { "label": "Ich bin skeptisch", "next": "skeptic" }
@@ -58,17 +64,17 @@
                 "visual": "breathe"
             },
             "skeptic": {
-                "text": "Verständlich. Skepsis schützt die Vernunft vor Täuschung. Bleib skeptisch – aber hör kurz zu. Denn genau darum geht es.",
+                "text": "Verständlich. Skepsis schützt die Vernunft vor Täuschung. Man hat uns oft genug enttäuscht. Bleib skeptisch – aber hör kurz zu. Denn genau darum geht es.",
                 "options": [{ "label": "Erzähl mir mehr", "next": "hook" }],
                 "visual": "tremble"
             },
             "hook": {
-                "text": "Man sagt, Wahlen verhindern Diktaturen. Aber hast du dich je gefragt: Warum kamen die schlimmsten Tyrannen fast immer durch Wahlen an die Macht?",
+                "text": "Man sagt uns, Wahlen seien der Schutzwall gegen Diktatoren. Aber hast du dich mal gefragt: Warum kamen die schlimmsten Tyrannen fast immer durch Wahlen an die Macht?",
                 "options": [{ "label": "Warum ist das so?", "next": "path_parties_start" }],
                 "visual": "chaos"
             },
             "path_parties_start": {
-                "text": "Dieser tägliche Kampf. Blau gegen Rot. Links gegen Rechts. Fühlt es sich für dich nach Lösungen an – oder nach systematischer Spaltung?",
+                "text": "Schau dir diesen täglichen Kampf an. Links gegen Rechts. Fühlt es sich für dich nach echten Lösungen an – oder nach systematischer Spaltung?",
                 "options": [
                     { "label": "Es spaltet uns nur", "next": "path_expert_logic" },
                     { "label": "Streit gehört dazu", "next": "nvc_validation_conflict" }
@@ -76,7 +82,7 @@
                 "visual": "clash"
             },
             "nvc_validation_conflict": {
-                "text": "Ich höre dich. Wettbewerb belebt die Ideen. Aber ist das noch Wettbewerb – oder ein Vernichtungskrieg, der nur den Parteien nützt?",
+                "text": "Ich höre dich. Wettbewerb belebt die Ideen. Aber ist das noch Wettbewerb – oder ein Vernichtungskrieg der Parteien, der nur deren eigene Macht zementiert?",
                 "options": [{ "label": "Es nützt nur den Parteien", "next": "path_expert_logic" }],
                 "visual": "tremble"
             },
@@ -89,22 +95,22 @@
                 "visual": "pyramid"
             },
             "nvc_validation_expert": {
-                "text": "Niemand will Amateure am Steuer. Aber vertritt ein ferner Experte deine Interessen besser als ein geloster Nachbar auf Augenhöhe?",
+                "text": "Niemand will Amateure am Steuer. Aber schau in den Bundestag: 87% Akademiker bei 20% in der Bevölkerung. Ist das Repräsentation – oder ein Zaun aus Bildungstiteln, der dich ausschließt?",
                 "options": [{ "label": "Ein Nachbar wäre fairer", "next": "intro_isonomia_logic" }],
                 "visual": "pyramid_struggle"
             },
             "platon_deconstruction": {
-                "text": "Intelligenz wird oft als Zaun benutzt, um Bürger wie dich auszuschließen. Das ist die Geburtslüge der Aristokratie. Demokratie bedeutet: absolute Gleichheit.",
-                "options": [{ "label": "Zeig mir die Lösung", "next": "intro_isonomia_logic" }],
+                "text": "Bildung wird heute als antidemokratischer Exklusionsmechanismus missbraucht. Das ist das Erbe Platons: Die Herrschaft der 'Besten'. Eine Wahl-Aristokratie.",
+                "options": [{ "label": "Wie lösen wir das auf?", "next": "intro_isonomia_logic" }],
                 "visual": "pyramid_dissolve"
             },
             "intro_isonomia_logic": {
                 "text": "Stell dir vor: Keine Politiker mehr. Nur noch wir. Wir regieren uns selbst. Abwechselnd. Unbestechlich durch das Los. Das ist Isonomie.",
-                "options": [{ "label": "Manifestiere das System", "next": "final_manifestation" }],
+                "options": [{ "label": "Zeig mir das System", "next": "final_manifestation" }],
                 "visual": "stochastic"
             },
             "final_manifestation": {
-                "text": "Hier endet die Spaltung. Hier beginnt die Freiheit. Jedes Licht in diesem Netz bist du. Wir sind das System.",
+                "text": "Hier endet die Spaltung. Hier beginnt die Freiheit. Jedes Licht in diesem Netz bist du. Wir sind die Souveränität.",
                 "options": [{ "label": "Zum Ressourcen-Vault", "next": "vault" }],
                 "visual": "reset_to_grid"
             }
@@ -112,31 +118,40 @@
 
         const ISONOMIA = {
             dots: [],
+            dotCount: 180,
+
             init() {
                 const container = document.getElementById('particle-container');
-                for (let i = 0; i < 180; i++) {
+                for (let i = 0; i < this.dotCount; i++) {
                     const d = document.createElement('div');
                     d.className = 'dot';
                     container.appendChild(d);
                     this.dots.push(d);
                 }
+                // Unidirektionaler Lock (Browser Back Disable)
                 window.history.pushState(null, "", window.location.href);
+                window.onpopstate = () => window.history.pushState(null, "", window.location.href);
+                
                 this.transition('start');
             },
 
             transition(stepKey) {
                 const data = narrativeData[stepKey];
                 if (stepKey === 'vault') return this.showVault();
+
                 const ui = document.getElementById('content-layer');
                 anime.timeline({ easing: 'easeInOutQuad' })
-                .add({ targets: ui, opacity: 0, translateY: -20, duration: 600, complete: () => {
-                    this.render(data, stepKey);
-                    this.applyVisualMode(data.visual);
-                }})
+                .add({
+                    targets: ui, opacity: 0, translateY: -20, duration: 600,
+                    complete: () => {
+                        this.renderContent(data, stepKey);
+                        this.applyVisualMode(data.visual);
+                    }
+                })
                 .add({ targets: ui, opacity: 1, translateY: 0, duration: 800 });
             },
 
-            render(data, stepKey) {
+            renderContent(data, stepKey) {
                 document.getElementById('content-layer').innerHTML = `
                     <div class="gandalf-voice">
                         <h1>${data.text}</h1>
@@ -148,66 +163,157 @@
 
             applyVisualMode(mode) {
                 anime.remove('.dot');
+                
                 if (mode === 'breathe') {
                     this.dots.forEach(d => {
-                        anime.set(d, { left: anime.random(0,100)+'vw', top: anime.random(0,100)+'vh', backgroundColor: '#00FFCC' });
+                        anime.set(d, { 
+                            left: anime.random(0, 100) + 'vw', 
+                            top: anime.random(0, 100) + 'vh',
+                            backgroundColor: '#00FFCC',
+                            opacity: 0.4
+                        });
                     });
-                    anime({ targets: '.dot', scale: [1, 1.3], opacity: [0.2, 0.4], delay: anime.stagger(10), duration: 3000, loop: true, direction: 'alternate' });
+                    anime({
+                        targets: '.dot',
+                        scale: [1, 1.3],
+                        opacity: [0.2, 0.4],
+                        delay: anime.stagger(10),
+                        duration: 3000,
+                        loop: true,
+                        direction: 'alternate'
+                    });
                 }
+
+                if (mode === 'tremble') {
+                    anime({
+                        targets: '.dot',
+                        translateX: () => anime.random(-3, 3),
+                        translateY: () => anime.random(-3, 3),
+                        duration: 100,
+                        loop: true,
+                        direction: 'alternate'
+                    });
+                }
+
                 if (mode === 'chaos') {
-                    anime({ targets: '.dot', translateX: () => anime.random(-40, 40) + 'vw', translateY: () => anime.random(-40, 40) + 'vh', backgroundColor: '#FF3366', opacity: 0.6, duration: 3000 });
-                }
-                if (mode === 'clash') {
-                    this.dots.forEach((d, i) => {
-                        const isLeft = i % 2 === 0;
-                        anime({ targets: d, left: isLeft ? anime.random(5, 35)+'vw' : anime.random(65, 95)+'vw', top: anime.random(10, 90)+'vh', backgroundColor: isLeft ? '#00FFCC' : '#FF3366', duration: 2000, easing: 'spring(1, 80, 10, 0)' });
+                    anime({
+                        targets: '.dot',
+                        translateX: () => anime.random(-45, 45) + 'vw',
+                        translateY: () => anime.random(-45, 45) + 'vh',
+                        backgroundColor: '#FF3366',
+                        duration: 3000,
+                        easing: 'easeOutExpo'
                     });
                 }
+
+                if (mode === 'clash') {
+                    this.dots.forEach((dot, i) => {
+                        const isLeft = i % 2 === 0;
+                        anime({
+                            targets: dot,
+                            left: isLeft ? anime.random(5, 35) + 'vw' : anime.random(65, 95) + 'vw',
+                            top: anime.random(10, 90) + 'vh',
+                            backgroundColor: isLeft ? '#00FFCC' : '#FF3366',
+                            duration: 2000,
+                            easing: 'spring(1, 80, 10, 0)'
+                        });
+                    });
+                }
+
                 if (mode === 'pyramid' || mode === 'pyramid_struggle') {
                     this.dots.forEach((d, i) => {
                         const row = Math.floor(Math.sqrt(i));
                         const col = i - row * row;
-                        const isElite = i < 10;
+                        const isElite = i < 12; // Die obersten 12 Punkte sind die Elite
+                        
                         anime({
                             targets: d,
-                            left: (50 + (col - row / 2) * 4) + 'vw',
-                            top: (20 + row * 6) + 'vh',
+                            left: (50 + (col - row / 2) * 3.5) + 'vw',
+                            top: (15 + row * 6.5) + 'vh',
                             backgroundColor: isElite ? '#FFFFFF' : '#00FFCC',
-                            opacity: isElite ? 1 : 0.3,
-                            scale: isElite ? 1.5 : 1,
-                            duration: 2500
+                            opacity: isElite ? 1 : 0.2,
+                            scale: isElite ? 1.6 : 0.8,
+                            duration: 2500,
+                            easing: 'easeInOutQuart'
                         });
+
+                        // Refinement: Karrierismus/Drängeln simulieren
                         if (!isElite && mode === 'pyramid_struggle') {
-                            anime({ targets: d, translateY: [0, -15], direction: 'alternate', loop: true, delay: anime.random(0, 2000), easing: 'easeInOutSine' });
+                            anime({
+                                targets: d,
+                                translateY: [0, -25],
+                                opacity: [0.2, 0.5, 0.2],
+                                duration: anime.random(1000, 3000),
+                                delay: anime.random(0, 1000),
+                                loop: true,
+                                direction: 'alternate',
+                                easing: 'easeInOutSine'
+                            });
                         }
                     });
                 }
-                if (mode === 'stochastic') {
-                    anime({ targets: '.dot', left: '50vw', top: '50vh', scale: [0, 1], opacity: [0, 0.5], translateX: () => anime.random(-300, 300), translateY: () => anime.random(-300, 300), backgroundColor: '#00FFCC', duration: 3000, delay: anime.stagger(5) });
+
+                if (mode === 'pyramid_dissolve') {
+                    anime({
+                        targets: '.dot',
+                        translateX: () => anime.random(-500, 500),
+                        translateY: () => anime.random(100, 800),
+                        rotate: () => anime.random(-180, 180),
+                        opacity: 0.1,
+                        duration: 3000
+                    });
                 }
+
+                if (mode === 'stochastic') {
+                    anime({
+                        targets: '.dot',
+                        left: '50vw', top: '50vh',
+                        scale: [0, 1],
+                        opacity: [0, 0.6],
+                        translateX: () => anime.random(-400, 400),
+                        translateY: () => anime.random(-400, 400),
+                        backgroundColor: '#00FFCC',
+                        duration: 3500,
+                        delay: anime.stagger(8)
+                    });
+                }
+
                 if (mode === 'reset_to_grid') {
-                    anime.timeline()
-                    .add({ targets: '.dot', opacity: 0, scale: 0, duration: 1500 })
-                    .add({ targets: '.dot', opacity: 0.6, scale: 1, left: (el, i) => (10 + (i % 15) * 6) + 'vw', top: (10 + Math.floor(i / 15) * 7) + 'vh', duration: 2000, delay: anime.stagger(20, {from: 'center'}) });
+                    const tl = anime.timeline();
+                    tl.add({ targets: '.dot', opacity: 0, scale: 0, duration: 1500 })
+                      .add({
+                        targets: '.dot',
+                        opacity: 0.6,
+                        scale: 1,
+                        left: (el, i) => (10 + (i % 15) * 6) + 'vw',
+                        top: (10 + Math.floor(i / 15) * 7) + 'vh',
+                        backgroundColor: '#00FFCC',
+                        boxShadow: '0 0 15px #00FFCC',
+                        duration: 2000,
+                        delay: anime.stagger(30, {from: 'center'})
+                    });
                 }
             },
 
             showVault() {
-                document.getElementById('content-layer').innerHTML = `
+                const ui = document.getElementById('content-layer');
+                ui.innerHTML = `
                     <div class="gandalf-voice">
-                        <h1>Wahrheits-Referenzen</h1>
-                        <p>Isonomie ist kein Wunsch, sondern eine Notwendigkeit.</p>
+                        <h1>Ressourcen-Vault</h1>
+                        <p>Das Kronos-Protokoll: Beweise für den aristokratischen Irrtum.</p>
                         <div class="vault-grid">
-                            <a href="#" class="vault-item">Argumentations-Matrix (PDF)</a>
-                            <a href="#" class="vault-item">Das Trugbild der Moderne</a>
-                            <a href="#" class="vault-item">Sinnlosigkeit der Parteien</a>
-                            <a href="#" class="vault-item">Bollwerk gegen Faschismus</a>
+                            <a href="#" class="vault-item">Argumentations-Matrix<span>Technische System-Validierung (PDF)</span></a>
+                            <a href="#" class="vault-item">Das Trugbild der Moderne<span>Analyse der strukturellen Aristokratie</span></a>
+                            <a href="#" class="vault-item">Bollwerk gegen Faschismus<span>Immunisierung der Verfassung</span></a>
+                            <a href="#" class="vault-item">Intelligenz-Ideale<span>Kritik des akademischen Ausschlusses</span></a>
                         </div>
-                        <br><button class="haptic-btn" onclick="location.reload()">Neustart</button>
+                        <br><br>
+                        <button class="haptic-btn" onclick="location.reload()">Journey neu starten</button>
                     </div>`;
                 this.applyVisualMode('reset_to_grid');
             }
         };
+
         window.onload = () => ISONOMIA.init();
     </script>
 </body>
