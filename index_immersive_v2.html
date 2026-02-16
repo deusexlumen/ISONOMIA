@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISONOMIA | Die Reise</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Cinzel', 'Times New Roman', serif;
+            cursor: crosshair;
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* SVG Background Layer */
+        #svg-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #morphing-shape {
+            width: 100vw;
+            height: 100vh;
+            fill: rgba(0, 245, 212, 0.03);
+            filter: blur(80px);
+        }
+
+        /* UI Layer */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Text with Split Characters */
+        .station-text {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            pointer-events: auto;
+            max-width: 700px;
+            padding: 2rem;
+        }
+
+        .station-text.active {
+            opacity: 1;
+        }
+
+        .station-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.08em;
+            line-height: 1.1;
+            overflow: hidden;
+        }
+
+        .station-title .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100px) rotateX(-90deg);
+        }
+
+        .station-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.85);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Organic Portals */
+        .portal-container {
+            position: absolute;
+            bottom: 12%;
+            display: flex;
+            gap: 3rem;
+            opacity: 0;
+            pointer-events: auto;
+        }
+
+        .portal-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+        }
+
+        .portal-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .portal-shape {
+            fill: rgba(0, 245, 212, 0.1);
+            stroke: rgba(0, 245, 212, 0.5);
+            stroke-width: 1;
+            transition: all 0.3s ease;
+        }
+
+        .portal-wrapper:hover .portal-shape {
+            fill: rgba(0, 245, 212, 0.2);
+            stroke: rgba(0, 245, 212, 0.9);
+            filter: drop-shadow(0 0 30px rgba(0, 245, 212, 0.5));
+        }
+
+        .portal-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(0, 245, 212, 0.9);
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Floating Particles along path */
+        .path-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00f5d4;
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px #00f5d4;
+        }
+
+        /* Progress Ring with Animation */
+        #progress-container {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #progress-ring {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f5d4, #00ffaa, #00f5d4);
+            background-size: 200% 100%;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+        }
+
+        .nav-hint {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        /* Station Dots with Ripple */
+        #station-dots {
+            position: fixed;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            z-index: 20;
+        }
+
+        .dot-wrapper {
+            position: relative;
+            width: 12px;
+            height: 12px;
+        }
+
+        .dot {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .dot.active {
+            background: #00f5d4;
+            box-shadow: 0 0 20px #00f5d4, 0 0 40px rgba(0, 245, 212, 0.5);
+            transform: scale(1.5);
+        }
+
+        .dot.visited {
+            background: rgba(0, 245, 212, 0.5);
+        }
+
+        .dot-ripple {
+            position: absolute;
+            inset: -4px;
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 50%;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        /* Loading Screen */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .loading-blob {
+            width: 100px;
+            height: 100px;
+            fill: none;
+            stroke: #00f5d4;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 20px rgba(0, 245, 212, 0.5));
+        }
+
+        .loading-text {
+            color: rgba(0, 245, 212, 0.6);
+            font-size: 0.8rem;
+            letter-spacing: 0.3em;
+        }
+
+        /* Connection Lines SVG */
+        #connections-svg {
+            position: fixed;
+            inset: 0;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .connection-line {
+            fill: none;
+            stroke: rgba(0, 245, 212, 0.1);
+            stroke-width: 1;
+            stroke-dasharray: 5, 5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <svg class="loading-blob" viewBox="0 0 100 100">
+            <path id="loading-path" d="M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10"/>
+        </svg>
+        <div class="loading-text">DIMENSIONEN LADEN...</div>
+    </div>
+
+    <!-- SVG Background -->
+    <svg id="svg-background" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+        <path id="morphing-shape" d="M0,0 L1920,0 L1920,1080 L0,1080 Z"/>
+    </svg>
+
+    <!-- Connection Lines -->
+    <svg id="connections-svg">
+        <path id="tunnel-path" class="connection-line" d=""/>
+    </svg>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Layer -->
+    <div id="ui-layer"></div>
+
+    <!-- Progress -->
+    <div id="progress-container">
+        <div class="nav-hint">Wähle ein Portal</div>
+        <div id="progress-ring">
+            <div id="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- Station Dots -->
+    <div id="station-dots"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="anime.umd.min.js"></script>
+
+    <script>
+        // ==================================================================
+        // ISONOMIA - IMMERSIVE JOURNEY v2.0
+        // Mit Anime.js Effekten: Morphing, Stagger, Elastic, Path Animation
+        // ==================================================================
+
+        const Journey = {
+            scene: null,
+            camera: null,
+            renderer: null,
+            currentStation: 0,
+            isTransitioning: false,
+            stations: [],
+            particles: [],
+            targetPosition: new THREE.Vector3(0, 0, 0),
+            
+            // Organische Blob-Formen für Stationen
+            blobShapes: [
+                'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
+                'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
+                'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
+                'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
+            ],
+
+            // Hintergrund-Formen für Morphing
+            backgroundShapes: {
+                awakening: 'M0,0 L1920,0 L1920,1080 L0,1080 Z',
+                system_chaos: 'M960,200 L1720,540 L960,880 L200,540 Z',
+                power_void: 'M960,100 C1400,100 1700,400 1700,540 C1700,680 1400,980 960,980 C520,980 220,680 220,540 C220,400 520,100 960,100',
+                fear_vortex: 'M960,540 m-400,0 a400,400 0 1,0 800,0 a400,400 0 1,0 -800,0',
+                elite_pyramid: 'M960,200 L1400,800 L520,800 Z',
+                solution_realm: 'M200,200 Q960,100 1720,200 Q1820,540 1720,880 Q960,980 200,880 Q100,540 200,200',
+                action_nexus: 'M400,400 L1520,400 L1520,680 L400,680 Z'
+            },
+
+            stationData: [
+                {
+                    id: 'awakening',
+                    position: { x: 0, y: 0, z: 0 },
+                    title: 'Das Erwachen',
+                    text: 'Du stehst am Anfang. Vor dir liegt ein Pfad durch die Dimensionen der Demokratie.',
+                    color: '#00f5d4',
+                    bgShape: 'awakening',
+                    portals: [
+                        { label: 'System-Frust', target: 'system_chaos', color: '#ff6b9d' },
+                        { label: 'Machtlosigkeit', target: 'power_void', color: '#00f5d4' },
+                        { label: 'Zukunfts-Angst', target: 'fear_vortex', color: '#ffd700' }
+                    ]
+                },
+                {
+                    id: 'system_chaos',
+                    position: { x: 0, y: 0, z: -100 },
+                    title: 'Das Chaos',
+                    text: 'Das System funktioniert nicht zufällig schlecht. Es ist so gebaut.',
+                    color: '#ff6b9d',
+                    bgShape: 'system_chaos',
+                    portals: [
+                        { label: 'Tiefer blicken', target: 'elite_pyramid', color: '#ffffff' },
+                        { label: 'Weg hier', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'power_void',
+                    position: { x: 100, y: 0, z: -50 },
+                    title: 'Die Leere',
+                    text: 'Deine Stimme verschwindet im Nichts. Du wählst, aber du entscheidest nicht.',
+                    color: '#00f5d4',
+                    bgShape: 'power_void',
+                    portals: [
+                        { label: 'Aufstehen', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'fear_vortex',
+                    position: { x: -100, y: 0, z: -50 },
+                    title: 'Der Strudel',
+                    text: 'AfD. Klimakollaps. Krieg. Aber was, wenn das System selbst die Krise schafft?',
+                    color: '#ffd700',
+                    bgShape: 'fear_vortex',
+                    portals: [
+                        { label: 'Ausbruch', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'elite_pyramid',
+                    position: { x: 0, y: 50, z: -200 },
+                    title: 'Die Pyramide',
+                    text: '87% Akademiker im Parlament. 20% in der Bevölkerung. Das ist keine Repräsentation.',
+                    color: '#ffffff',
+                    bgShape: 'elite_pyramid',
+                    portals: [
+                        { label: 'Die Alternative', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'solution_realm',
+                    position: { x: 0, y: 0, z: -300 },
+                    title: 'Das Reich des Loses',
+                    text: 'Athen. 200 Jahre. Keine Wahlen. 500 Bürger. Ausgelost. Wahre Repräsentation.',
+                    color: '#00f5d4',
+                    bgShape: 'solution_realm',
+                    portals: [
+                        { label: 'Wie funktioniert es?', target: 'action_nexus', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'action_nexus',
+                    position: { x: 0, y: 0, z: -400 },
+                    title: 'Der Nexus',
+                    text: 'Du hast gesehen. Jetzt: Handle. Lokale Räte. Dialog. Politischer Druck.',
+                    color: '#ffd700',
+                    bgShape: 'action_nexus',
+                    portals: [
+                        { label: 'Lokale Räte', target: 'awakening', color: '#00f5d4' },
+                        { label: 'Dialog', target: 'awakening', color: '#00f5d4' },
+                        { label: 'Politik', target: 'awakening', color: '#00f5d4' }
+                    ]
+                }
+            ],
+
+            init() {
+                this.createScene();
+                this.createParticles();
+                this.setupUI();
+                this.animateLoading();
+                
+                setTimeout(() => {
+                    document.getElementById('loading').classList.add('hidden');
+                    this.showStation(0);
+                    this.startBackgroundMorphing();
+                }, 2500);
+            },
+
+            createScene() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x000000, 0.003);
+
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 0, 50);
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+
+                window.addEventListener('resize', () => this.onResize());
+            },
+
+            createParticles() {
+                // Partikel entlang eines Pfads
+                const geometry = new THREE.BufferGeometry();
+                const count = 3000;
+                const positions = new Float32Array(count * 3);
+                const colors = new Float32Array(count * 3);
+
+                for (let i = 0; i < count * 3; i += 3) {
+                    const t = i / (count * 3);
+                    positions[i] = (Math.random() - 0.5) * 800;
+                    positions[i + 1] = (Math.random() - 0.5) * 800;
+                    positions[i + 2] = -t * 500 + Math.random() * 100;
+
+                    const color = new THREE.Color();
+                    color.setHSL(0.45 + Math.random() * 0.1, 0.8, 0.5);
+                    colors[i] = color.r;
+                    colors[i + 1] = color.g;
+                    colors[i + 2] = color.b;
+                }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const material = new THREE.PointsMaterial({
+                    size: 3,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending
+                });
+
+                this.particleSystem = new THREE.Points(geometry, material);
+                this.scene.add(this.particleSystem);
+
+                // Partikel-Animation mit Anime.js
+                this.animateParticles();
+            },
+
+            animateParticles() {
+                // Partikel fließen durch den Tunnel
+                anime({
+                    targets: this.particleSystem.rotation,
+                    y: [0, Math.PI * 2],
+                    duration: 60000,
+                    easing: 'linear',
+                    loop: true
+                });
+
+                // Individuelle Partikel-Bewegung
+                const positions = this.particleSystem.geometry.attributes.position.array;
+                
+                for (let i = 0; i < 50; i++) {
+                    const idx = Math.floor(Math.random() * 1000);
+                    anime({
+                        targets: positions,
+                        [idx * 3 + 2]: [-500, 100],
+                        duration: 3000 + Math.random() * 4000,
+                        easing: 'easeInOutQuad',
+                        loop: true,
+                        direction: 'alternate',
+                        delay: Math.random() * 2000
+                    });
+                }
+            },
+
+            animateLoading() {
+                // Loading Blob Morphing
+                const loadingPath = document.getElementById('loading-path');
+                
+                anime({
+                    targets: loadingPath,
+                    d: this.blobShapes,
+                    duration: 2000,
+                    easing: 'easeInOutQuad',
+                    direction: 'alternate',
+                    loop: true
+                });
+
+                // Rotation
+                anime({
+                    targets: '.loading-blob',
+                    rotate: 360,
+                    duration: 8000,
+                    easing: 'linear',
+                    loop: true
+                });
+            },
+
+            startBackgroundMorphing() {
+                // Hintergrund-Shape-Morphing
+                const shape = document.getElementById('morphing-shape');
+                
+                // Initial
+                shape.setAttribute('d', this.backgroundShapes.awakening);
+            },
+
+            morphBackground(shapeKey) {
+                const shape = document.getElementById('morphing-shape');
+                const newPath = this.backgroundShapes[shapeKey] || this.backgroundShapes.awakening;
+                
+                anime({
+                    targets: shape,
+                    d: newPath,
+                    duration: 2500,
+                    easing: 'easeInOutElastic(1, .6)'
+                });
+
+                // Farb-Transition
+                const station = this.stationData.find(s => s.bgShape === shapeKey);
+                if (station) {
+                    anime({
+                        targets: shape,
+                        fill: `rgba(${this.hexToRgb(station.color)}, 0.03)`,
+                        duration: 2000,
+                        easing: 'easeOutQuad'
+                    });
+                }
+            },
+
+            hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? 
+                    `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+                    '0, 245, 212';
+            },
+
+            setupUI() {
+                // Create station dots
+                const dotsContainer = document.getElementById('station-dots');
+                this.stationData.forEach((_, index) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'dot-wrapper';
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.dataset.index = index;
+                    
+                    const ripple = document.createElement('div');
+                    ripple.className = 'dot-ripple';
+                    
+                    wrapper.appendChild(dot);
+                    wrapper.appendChild(ripple);
+                    dotsContainer.appendChild(wrapper);
+                });
+
+                this.updateProgress();
+            },
+
+            showStation(index) {
+                if (index < 0 || index >= this.stations.length) return;
+                
+                this.currentStation = index;
+                const data = this.stationData[index];
+                
+                // Morph Hintergrund
+                this.morphBackground(data.bgShape);
+                
+                // Update UI mit Animationen
+                this.updateUI(data);
+                this.updateDots(index);
+                this.updateProgress();
+
+                // Kamera-Position mit Elastic-Easing
+                const stationPos = data.position;
+                
+                anime({
+                    targets: this.camera.position,
+                    x: stationPos.x,
+                    y: stationPos.y,
+                    z: stationPos.z + 40,
+                    duration: 2000,
+                    easing: 'easeOutElastic(1, .7)'
+                });
+
+                // Partikel-Explosion bei Station-Wechsel
+                this.explodeParticles();
+            },
+
+            explodeParticles() {
+                const positions = this.particleSystem.geometry.attributes.position.array;
+                
+                // Grid Ripple Effekt auf Partikel
+                anime({
+                    targets: positions,
+                    scale: [
+                        { value: 1.5, duration: 200 },
+                        { value: 1, duration: 800 }
+                    ],
+                    delay: anime.stagger(1, {
+                        grid: [50, 60],
+                        from: 'center'
+                    }),
+                    easing: 'easeOutElastic(1, .5)'
+                });
+            },
+
+            updateUI(data) {
+                const ui = document.getElementById('ui-layer');
+                ui.innerHTML = '';
+
+                // Text Container
+                const textContainer = document.createElement('div');
+                textContainer.className = 'station-text';
+
+                // Title mit Split Text
+                const title = document.createElement('h1');
+                title.className = 'station-title';
+                title.style.color = data.color;
+                
+                // Buchstaben einzeln wrappen
+                data.title.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = char === ' ' ? '\u00A0' : char;
+                    title.appendChild(span);
+                });
+
+                // Subtitle
+                const subtitle = document.createElement('p');
+                subtitle.className = 'station-subtitle';
+                subtitle.textContent = data.text;
+
+                textContainer.appendChild(title);
+                textContainer.appendChild(subtitle);
+                ui.appendChild(textContainer);
+
+                // Portale mit organischen Blob-Formen
+                if (data.portals) {
+                    const portalContainer = document.createElement('div');
+                    portalContainer.className = 'portal-container';
+
+                    data.portals.forEach((portal, i) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'portal-wrapper';
+                        
+                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.className = 'portal-svg';
+                        svg.setAttribute('viewBox', '0 0 100 100');
+                        
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        path.className = 'portal-shape';
+                        path.setAttribute('d', this.blobShapes[0]);
+                        path.style.stroke = portal.color;
+                        
+                        svg.appendChild(path);
+                        
+                        const label = document.createElement('span');
+                        label.className = 'portal-label';
+                        label.textContent = portal.label;
+                        label.style.color = portal.color;
+
+                        wrapper.appendChild(svg);
+                        wrapper.appendChild(label);
+                        
+                        // Blob-Morphing beim Hover
+                        wrapper.addEventListener('mouseenter', () => {
+                            anime({
+                                targets: path,
+                                d: this.blobShapes[2],
+                                duration: 800,
+                                easing: 'easeOutElastic(1, .6)'
+                            });
+                        });
+                        
+                        wrapper.addEventListener('mouseleave', () => {
+                            anime({
+                                targets: path,
+                                d: this.blobShapes[0],
+                                duration: 600,
+                                easing: 'easeOutQuad'
+                            });
+                        });
+                        
+                        wrapper.addEventListener('click', () => this.travelToStation(portal.target));
+                        portalContainer.appendChild(wrapper);
+
+                        // Kontinuierliches Blob-Morphing
+                        anime({
+                            targets: path,
+                            d: [this.blobShapes[1], this.blobShapes[2], this.blobShapes[3], this.blobShapes[0]],
+                            duration: 8000 + i * 2000,
+                            easing: 'easeInOutQuad',
+                            direction: 'alternate',
+                            loop: true,
+                            delay: i * 500
+                        });
+                    });
+
+                    ui.appendChild(portalContainer);
+                }
+
+                // Text-Animationen mit Stagger
+                requestAnimationFrame(() => {
+                    textContainer.classList.add('active');
+
+                    // Title Characters Stagger
+                    anime({
+                        targets: '.station-title .char',
+                        translateY: [100, 0],
+                        rotateX: [-90, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(40, { from: 'center' }),
+                        duration: 1200,
+                        easing: 'easeOutElastic(1, .6)'
+                    });
+
+                    // Subtitle Fade
+                    anime({
+                        targets: '.station-subtitle',
+                        translateY: [30, 0],
+                        opacity: [0, 1],
+                        duration: 1000,
+                        delay: 600,
+                        easing: 'easeOutExpo'
+                    });
+
+                    // Portale Stagger
+                    anime({
+                        targets: '.portal-wrapper',
+                        scale: [0, 1],
+                        opacity: [0, 1],
+                        delay: anime.stagger(150, { start: 800 }),
+                        duration: 1000,
+                        easing: 'easeOutElastic(1, .5)'
+                    });
+                });
+            },
+
+            updateDots(index) {
+                document.querySelectorAll('.dot-wrapper').forEach((wrapper, i) => {
+                    const dot = wrapper.querySelector('.dot');
+                    const ripple = wrapper.querySelector('.dot-ripple');
+                    
+                    dot.classList.remove('active', 'visited');
+                    
+                    if (i === index) {
+                        dot.classList.add('active');
+                        
+                        // Ripple Animation
+                        anime({
+                            targets: ripple,
+                            scale: [1, 2.5],
+                            opacity: [0.6, 0],
+                            duration: 1000,
+                            easing: 'easeOutExpo',
+                            loop: true
+                        });
+                    } else if (i < index) {
+                        dot.classList.add('visited');
+                    }
+                });
+
+                // Grid Ripple Effekt auf Dots
+                anime({
+                    targets: '.dot',
+                    scale: [
+                        { value: 1.3, duration: 200 },
+                        { value: 1, duration: 400 }
+                    ],
+                    delay: anime.stagger(50, {
+                        grid: [1, 7],
+                        from: index
+                    }),
+                    easing: 'easeOutElastic(1, .5)'
+                });
+            },
+
+            updateProgress() {
+                const progress = ((this.currentStation + 1) / this.stationData.length) * 100;
+                
+                anime({
+                    targets: '#progress-fill',
+                    width: `${progress}%`,
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
+
+                // Gradient Animation
+                anime({
+                    targets: '#progress-fill',
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                    duration: 3000,
+                    easing: 'linear',
+                    loop: true
+                });
+            },
+
+            travelToStation(stationId) {
+                if (this.isTransitioning) return;
+                
+                const targetIndex = this.stationData.findIndex(s => s.id === stationId);
+                if (targetIndex === -1) return;
+                
+                this.isTransitioning = true;
+
+                // UI-Elemente ausblenden mit Stagger
+                anime.timeline({
+                    complete: () => {
+                        this.showStation(targetIndex);
+                        this.isTransitioning = false;
+                    }
+                })
+                .add({
+                    targets: '.station-title .char',
+                    translateY: [0, -100],
+                    rotateX: [0, 90],
+                    opacity: [1, 0],
+                    delay: anime.stagger(30, { from: 'last' }),
+                    duration: 600,
+                    easing: 'easeInExpo'
+                })
+                .add({
+                    targets: '.station-subtitle',
+                    translateY: [0, -30],
+                    opacity: [1, 0],
+                    duration: 400,
+                    easing: 'easeInQuad'
+                }, '-=400')
+                .add({
+                    targets: '.portal-wrapper',
+                    scale: [1, 0],
+                    opacity: [1, 0],
+                    delay: anime.stagger(50, { from: 'last' }),
+                    duration: 500,
+                    easing: 'easeInBack'
+                }, '-=300');
+            },
+
+            onResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        };
+
+        // Start
+        Journey.init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISONOMIA | KI DEMO PROTOTYP</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Cinzel', 'Times New Roman', serif;
+            cursor: crosshair;
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* UI Layer */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .station-text {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            pointer-events: auto;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .station-text.active {
+            opacity: 1;
+        }
+
+        .station-title {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+            line-height: 1.1;
+            overflow: hidden;
+            text-shadow: 0 0 60px currentColor;
+        }
+
+        .station-title .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100px) rotateX(-90deg);
+        }
+
+        /* KI-GENERATED TEXT MARKER */
+        .ki-generated {
+            background: linear-gradient(90deg, transparent, rgba(0,245,212,0.15), transparent);
+            padding: 20px;
+            border-left: 3px solid #00f5d4;
+            border-right: 3px solid #00f5d4;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.95);
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .ki-generated::before {
+            content: '✨ KI-GENERIERT';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: #00f5d4;
+            color: #000;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            letter-spacing: 0.2em;
+        }
+
+        .ki-loading {
+            display: inline-block;
+            animation: kiPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes kiPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Profil Panel */
+        #profile-panel {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            width: 300px;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,245,212,0.3);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 20;
+            pointer-events: auto;
+        }
+
+        #profile-panel h3 {
+            color: #00f5d4;
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .dimension {
+            margin: 12px 0;
+        }
+
+        .dimension-label {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .dimension-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .fill-system { background: #ff6b9d; }
+        .fill-emotion { background: #00f5d4; }
+        .fill-impact { background: #ffd700; }
+        .fill-open { background: #ff00ff; }
+        .fill-social { background: #00ffff; }
+        .fill-urgency { background: #ff3333; }
+
+        .archetype-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(0,245,212,0.1);
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(0,245,212,0.3);
+        }
+
+        .archetype-name {
+            font-size: 1.3rem;
+            color: #00f5d4;
+            margin-bottom: 5px;
+        }
+
+        .archetype-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        /* Portals */
+        .portal-container {
+            position: absolute;
+            bottom: 10%;
+            display: flex;
+            gap: 3rem;
+            opacity: 0;
+            pointer-events: auto;
+        }
+
+        .portal-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .portal-wrapper:hover {
+            transform: scale(1.1);
+        }
+
+        .portal-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .portal-shape {
+            fill: rgba(0, 245, 212, 0.1);
+            stroke: currentColor;
+            stroke-width: 2;
+        }
+
+        .portal-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Loading */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        .loading-text {
+            color: #00f5d4;
+            font-size: 1rem;
+            letter-spacing: 0.3em;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: #00f5d4;
+            box-shadow: 0 0 10px #00f5d4;
+        }
+
+        /* Status Badge */
+        #status-badge {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: rgba(255,0,0,0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            z-index: 100;
+        }
+
+        #status-badge.ready {
+            background: rgba(0,245,212,0.2);
+            border-color: #00f5d4;
+            color: #00f5d4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Status Badge -->
+    <div id="status-badge">🔴 KI LÄDT...</div>
+
+    <!-- Loading -->
+    <div id="loading">
+        <div class="loading-text">NEURONALES NETZ INITIALISIERT</div>
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-text" style="font-size: 0.8rem; opacity: 0.6;">
+            Lade TensorFlow.js & Transformers...
+        </div>
+    </div>
+
+    <!-- Profile Panel -->
+    <div id="profile-panel">
+        <h3>Psychologisches Profil</h3>
+        
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>System-Vertrauen</span>
+                <span id="val-system">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-system" id="bar-system"></div>
+            </div>
+        </div>
+
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>Emotionalität</span>
+                <span id="val-emotion">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-emotion" id="bar-emotion"></div>
+            </div>
+        </div>
+
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>Persönliche Betroffenheit</span>
+                <span id="val-impact">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-impact" id="bar-impact"></div>
+            </div>
+        </div>
+
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>Offenheit</span>
+                <span id="val-open">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-open" id="bar-open"></div>
+            </div>
+        </div>
+
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>Soziale Orientierung</span>
+                <span id="val-social">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-social" id="bar-social"></div>
+            </div>
+        </div>
+
+        <div class="dimension">
+            <div class="dimension-label">
+                <span>Dringlichkeit</span>
+                <span id="val-urgency">50%</span>
+            </div>
+            <div class="dimension-bar">
+                <div class="dimension-fill fill-urgency" id="bar-urgency"></div>
+            </div>
+        </div>
+
+        <div class="archetype-display">
+            <div class="archetype-name" id="archetype-name">Analysiere...</div>
+            <div class="archetype-desc" id="archetype-desc">Klicke auf Portale um dein Profil zu formen</div>
+        </div>
+    </div>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Layer -->
+    <div id="ui-layer"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
+    <script src="anime.umd.min.js"></script>
+
+    <script>
+        // ==================================================================
+        // ISONOMIA KI DEMO PROTOTYP
+        // Mit TensorFlow.js & Transformers.js
+        // ==================================================================
+
+        const KIDemo = {
+            scene: null,
+            camera: null,
+            renderer: null,
+            currentStation: 0,
+            isTransitioning: false,
+            
+            // 6-dimensionales psychologisches Profil
+            profile: {
+                systemTrust: 50,
+                emotionality: 50,
+                personalImpact: 50,
+                openness: 50,
+                collectivism: 50,
+                urgency: 50
+            },
+
+            // Transformers Pipeline
+            textGenerator: null,
+            isModelLoaded: false,
+
+            stationData: [
+                {
+                    id: 'awakening',
+                    title: 'Das Erwachen',
+                    text: 'Deine Reise beginnt. Das System erfasst deine psychologischen Parameter...',
+                    color: '#00f5d4',
+                    portals: [
+                        { label: 'System korrumpiert', color: '#ff6b9d', 
+                          effect: { systemTrust: -20, emotionality: 10, urgency: 15 } },
+                        { label: 'Ich fühle mich machtlos', color: '#00f5d4',
+                          effect: { personalImpact: 25, emotionality: 20, systemTrust: -10 } },
+                        { label: 'Angst vor der Zukunft', color: '#ffd700',
+                          effect: { urgency: 25, emotionality: 15, openness: 10 } }
+                    ]
+                },
+                {
+                    id: 'chaos',
+                    title: 'Das Chaos',
+                    text: 'GENERATE_KI', // Marker für KI-Generierung
+                    color: '#ff6b9d',
+                    portals: [
+                        { label: 'Elite analysieren', color: '#ffffff',
+                          effect: { systemTrust: -15, openness: 10 } },
+                        { label: 'Alternative suchen', color: '#00f5d4',
+                          effect: { openness: 20, collectivism: 15 } }
+                    ]
+                },
+                {
+                    id: 'solution',
+                    title: 'Das Reich des Loses',
+                    text: 'GENERATE_KI',
+                    color: '#00f5d4',
+                    portals: [
+                        { label: 'Verstehen & Handeln', color: '#ffd700',
+                          effect: { collectivism: 20, urgency: 15, openness: 10 } }
+                    ]
+                }
+            ],
+
+            async init() {
+                this.createScene();
+                this.createParticles();
+                
+                // Lade KI-Modell
+                await this.loadAIModel();
+                
+                this.setupUI();
+                
+                // Verstecke Loading
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('status-badge').classList.add('ready');
+                document.getElementById('status-badge').textContent = '✅ KI BEREIT';
+                
+                this.showStation(0);
+                this.animate();
+            },
+
+            async loadAIModel() {
+                try {
+                    // Simuliere Ladebalken
+                    anime({
+                        targets: '.loading-progress',
+                        width: ['0%', '100%'],
+                        duration: 3000,
+                        easing: 'easeInOutQuad'
+                    });
+
+                    // Lade das Text-Generation Modell
+                    // HINWEIS: Das ist ein echtes Modell! ~50MB Download
+                    const { pipeline } = window.Transformers;
+                    
+                    this.textGenerator = await pipeline(
+                        'text-generation',
+                        'Xenova/gpt2-small',  // Kleines, schnelles Modell
+                        { quantized: true }    // Noch kleiner
+                    );
+                    
+                    this.isModelLoaded = true;
+                    console.log('✅ KI-Modell geladen!');
+                    
+                } catch(e) {
+                    console.error('KI-Ladefehler:', e);
+                    // Fallback: Statische Texte
+                    this.isModelLoaded = false;
+                }
+            },
+
+            async generateText(stationId) {
+                if (!this.isModelLoaded) {
+                    return this.getFallbackText(stationId);
+                }
+
+                // Erstelle Prompt basierend auf Profil
+                const p = this.profile;
+                const prompt = `Station: ${stationId}
+Psychologisches Profil:
+- Vertraut dem System: ${p.systemTrust}%
+- Emotional: ${p.emotionality}%
+- Persönlich betroffen: ${p.personalImpact}%
+- Offen für Neues: ${p.openness}%
+- Gemeinschaftsorientiert: ${p.collectivism}%
+- Dringlichkeit: ${p.urgency}%
+
+Philosophischer Text über Demokratie und Losverfahren (2 Sätze):`;
+
+                try {
+                    const result = await this.textGenerator(prompt, {
+                        max_length: 150,
+                        temperature: 0.8,
+                        do_sample: true,
+                        top_k: 50
+                    });
+                    
+                    // Extrahiere generierten Text (nach dem Prompt)
+                    let generated = result[0].generated_text;
+                    generated = generated.replace(prompt, '').trim();
+                    
+                    // Post-processing
+                    generated = generated.split('\n')[0]; // Nur erste Zeile
+                    if (generated.length > 200) {
+                        generated = generated.substring(0, 200) + '...';
+                    }
+                    
+                    return generated || this.getFallbackText(stationId);
+                    
+                } catch(e) {
+                    console.error('Generierungsfehler:', e);
+                    return this.getFallbackText(stationId);
+                }
+            },
+
+            getFallbackText(stationId) {
+                const fallbacks = {
+                    chaos: "Das System frisst seine eigenen Kinder. Die Demokratie ist tot, lang bevor wir es bemerkten.",
+                    solution: "Aus dem Chaos erwächst neue Ordnung. Das Los kennt keine Parteien, nur Bürger."
+                };
+                return fallbacks[stationId] || "Der Pfad ist ungewiss, aber der Wille entscheidet.";
+            },
+
+            updateProfile(effects) {
+                for (let key in effects) {
+                    if (this.profile[key] !== undefined) {
+                        this.profile[key] = Math.max(0, Math.min(100, 
+                            this.profile[key] + effects[key]
+                        ));
+                    }
+                }
+                this.updateProfileUI();
+                this.determineArchetype();
+            },
+
+            updateProfileUI() {
+                const p = this.profile;
+                
+                // Update Werte
+                document.getElementById('val-system').textContent = p.systemTrust + '%';
+                document.getElementById('val-emotion').textContent = p.emotionality + '%';
+                document.getElementById('val-impact').textContent = p.personalImpact + '%';
+                document.getElementById('val-open').textContent = p.openness + '%';
+                document.getElementById('val-social').textContent = p.collectivism + '%';
+                document.getElementById('val-urgency').textContent = p.urgency + '%';
+                
+                // Update Balken
+                document.getElementById('bar-system').style.width = p.systemTrust + '%';
+                document.getElementById('bar-emotion').style.width = p.emotionality + '%';
+                document.getElementById('bar-impact').style.width = p.personalImpact + '%';
+                document.getElementById('bar-open').style.width = p.openness + '%';
+                document.getElementById('bar-social').style.width = p.collectivism + '%';
+                document.getElementById('bar-urgency').style.width = p.urgency + '%';
+            },
+
+            determineArchetype() {
+                const p = this.profile;
+                let name = "Der Wanderer";
+                let desc = "Du suchst noch deinen Pfad";
+                
+                // Einfache Regeln für Archetypen
+                if (p.systemTrust < 30 && p.urgency > 70) {
+                    name = "🔥 Der Revolutionär";
+                    desc = "Du siehst das System brennen und willst es neu aufbauen";
+                } else if (p.emotionality > 70 && p.personalImpact > 60) {
+                    name = "💚 Der Empath";
+                    desc = "Du fühlst den Schmerz anderer und willst heilen";
+                } else if (p.openness > 70 && p.collectivism > 60) {
+                    name = "🏗️ Der Architekt";
+                    desc = "Du planst die neue Welt mit klarem Verstand";
+                } else if (p.systemTrust > 60) {
+                    name = "🛡️ Der Bewahrer";
+                    desc = "Du sucht Reform statt Revolution";
+                } else if (p.urgency > 70) {
+                    name = "⚡ Der Katalysator";
+                    desc = "Die Zeit drängt und du spürst es";
+                }
+                
+                document.getElementById('archetype-name').textContent = name;
+                document.getElementById('archetype-desc').textContent = desc;
+            },
+
+            createScene() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 0, 50);
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+            },
+
+            createParticles() {
+                const geometry = new THREE.BufferGeometry();
+                const count = 5000;
+                const positions = new Float32Array(count * 3);
+                const colors = new Float32Array(count * 3);
+
+                for (let i = 0; i < count * 3; i += 3) {
+                    positions[i] = (Math.random() - 0.5) * 1000;
+                    positions[i + 1] = (Math.random() - 0.5) * 1000;
+                    positions[i + 2] = (Math.random() - 0.5) * 1000;
+
+                    const color = new THREE.Color();
+                    color.setHSL(0.45 + Math.random() * 0.1, 0.8, 0.5);
+                    colors[i] = color.r;
+                    colors[i + 1] = color.g;
+                    colors[i + 2] = color.b;
+                }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const material = new THREE.PointsMaterial({
+                    size: 3,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending
+                });
+
+                this.particleSystem = new THREE.Points(geometry, material);
+                this.scene.add(this.particleSystem);
+            },
+
+            async showStation(index) {
+                if (index < 0 || index >= this.stationData.length) return;
+                
+                this.currentStation = index;
+                const data = this.stationData[index];
+                
+                // Generiere Text falls nötig
+                let displayText = data.text;
+                if (data.text === 'GENERATE_KI') {
+                    displayText = await this.generateText(data.id);
+                }
+                
+                this.updateUI(data, displayText);
+                
+                // Kamera Animation
+                anime({
+                    targets: this.camera.position,
+                    z: 40 + (index * 20),
+                    duration: 2000,
+                    easing: 'easeOutElastic(1, .7)'
+                });
+            },
+
+            updateUI(data, text) {
+                const ui = document.getElementById('ui-layer');
+                ui.innerHTML = '';
+
+                const textContainer = document.createElement('div');
+                textContainer.className = 'station-text';
+
+                const title = document.createElement('h1');
+                title.className = 'station-title';
+                title.style.color = data.color;
+                
+                data.title.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = char === ' ' ? '\u00A0' : char;
+                    title.appendChild(span);
+                });
+
+                // KI-generierter Text mit Marker
+                const subtitle = document.createElement('div');
+                subtitle.className = 'ki-generated';
+                if (data.text === 'GENERATE_KI') {
+                    subtitle.innerHTML = `<span class="ki-loading">${text}</span>`;
+                } else {
+                    subtitle.textContent = text;
+                }
+
+                textContainer.appendChild(title);
+                textContainer.appendChild(subtitle);
+                ui.appendChild(textContainer);
+
+                if (data.portals) {
+                    const portalContainer = document.createElement('div');
+                    portalContainer.className = 'portal-container';
+
+                    data.portals.forEach((portal, i) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'portal-wrapper';
+                        wrapper.style.color = portal.color;
+                        
+                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.className = 'portal-svg';
+                        svg.setAttribute('viewBox', '0 0 100 100');
+                        
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        path.className = 'portal-shape';
+                        path.setAttribute('d', 'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10');
+                        
+                        svg.appendChild(path);
+                        
+                        const label = document.createElement('span');
+                        label.className = 'portal-label';
+                        label.textContent = portal.label;
+
+                        wrapper.appendChild(svg);
+                        wrapper.appendChild(label);
+                        
+                        wrapper.addEventListener('click', () => {
+                            if (portal.effect) {
+                                this.updateProfile(portal.effect);
+                            }
+                            this.showStation(this.currentStation + 1);
+                        });
+                        
+                        portalContainer.appendChild(wrapper);
+                    });
+
+                    ui.appendChild(portalContainer);
+                }
+
+                requestAnimationFrame(() => {
+                    textContainer.classList.add('active');
+
+                    anime({
+                        targets: '.station-title .char',
+                        translateY: [100, 0],
+                        rotateX: [-90, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(40),
+                        duration: 1200,
+                        easing: 'easeOutElastic(1, .6)'
+                    });
+
+                    anime({
+                        targets: '.portal-wrapper',
+                        scale: [0, 1],
+                        opacity: [0, 1],
+                        delay: anime.stagger(150, { start: 800 }),
+                        duration: 1000,
+                        easing: 'easeOutElastic(1, .5)'
+                    });
+                });
+            },
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                if (this.particleSystem) {
+                    this.particleSystem.rotation.y += 0.0003;
+                }
+                
+                this.renderer.render(this.scene, this.camera);
+            }
+        };
+
+        // Start
+        KIDemo.init();
+    </script>
+</body>
+</html>

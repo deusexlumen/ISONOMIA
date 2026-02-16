@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../anime-master/anime-master/src"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "ISONOMIA",
+		"kimi.yoloMode": true
+	}
+}

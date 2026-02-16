@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISONOMIA | Die Reise MAXIMUM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            overflow: hidden;
+            background: #000;
+            font-family: 'Cinzel', 'Times New Roman', serif;
+            cursor: crosshair;
+        }
+
+        #canvas-container {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+        }
+
+        /* SVG Background Layer */
+        #svg-background {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #morphing-shape {
+            width: 100vw;
+            height: 100vh;
+            fill: rgba(0, 245, 212, 0.03);
+            filter: blur(80px);
+        }
+
+        /* Chromatic Aberration Overlay */
+        #chromatic-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            opacity: 0;
+        }
+
+        /* UI Layer */
+        #ui-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+
+        /* Text with Split Characters & 3D */
+        .station-text {
+            position: absolute;
+            text-align: center;
+            opacity: 0;
+            pointer-events: auto;
+            max-width: 800px;
+            padding: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        .station-text.active {
+            opacity: 1;
+        }
+
+        .station-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.1em;
+            line-height: 1;
+            overflow: hidden;
+            text-shadow: 0 0 60px currentColor;
+        }
+
+        .station-title .char {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(100px) rotateX(-90deg);
+            transition: text-shadow 0.3s ease;
+        }
+
+        .station-title .char:hover {
+            text-shadow: 0 0 30px currentColor, 0 0 60px currentColor;
+            transform: scale(1.2);
+        }
+
+        .station-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.3rem;
+            line-height: 2;
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translateY(30px);
+            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Organic Portals with Glow */
+        .portal-container {
+            position: absolute;
+            bottom: 10%;
+            display: flex;
+            gap: 4rem;
+            opacity: 0;
+            pointer-events: auto;
+            transform-style: preserve-3d;
+        }
+
+        .portal-wrapper {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .portal-wrapper:hover {
+            transform: translateZ(50px) scale(1.1);
+        }
+
+        .portal-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+
+        .portal-shape {
+            fill: rgba(0, 245, 212, 0.1);
+            stroke: currentColor;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .portal-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, currentColor 0%, transparent 70%);
+            opacity: 0;
+            filter: blur(20px);
+            pointer-events: none;
+        }
+
+        .portal-wrapper:hover .portal-glow {
+            opacity: 0.4;
+        }
+
+        .portal-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #fff;
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        /* Collectibles */
+        #collectibles-container {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 20;
+            display: flex;
+            gap: 15px;
+        }
+
+        .collectible {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            opacity: 0.3;
+            transition: all 0.5s ease;
+        }
+
+        .collectible.collected {
+            opacity: 1;
+            background: rgba(0, 245, 212, 0.2);
+            border-color: #00f5d4;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+            animation: collectiblePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes collectiblePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Progress Ring */
+        #progress-container {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #progress-ring {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f5d4, #00ffaa, #ffd700, #00f5d4);
+            background-size: 300% 100%;
+            box-shadow: 0 0 30px rgba(0, 245, 212, 0.8);
+        }
+
+        .nav-hint {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* Station Dots */
+        #station-dots {
+            position: fixed;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            z-index: 20;
+        }
+
+        .dot-wrapper {
+            position: relative;
+            width: 14px;
+            height: 14px;
+        }
+
+        .dot {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+        }
+
+        .dot.active {
+            background: #00f5d4;
+            box-shadow: 0 0 30px #00f5d4, 0 0 60px rgba(0, 245, 212, 0.5);
+            transform: scale(1.8);
+        }
+
+        .dot.visited {
+            background: rgba(0, 245, 212, 0.6);
+        }
+
+        /* Audio Toggle */
+        #audio-toggle {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            z-index: 20;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        #audio-toggle:hover {
+            border-color: #00f5d4;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.3);
+        }
+
+        #audio-toggle.muted {
+            opacity: 0.5;
+        }
+
+        /* Loading Screen */
+        #loading {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+        }
+
+        .loading-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .loading-blob {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: #00f5d4;
+            stroke-width: 2;
+            filter: drop-shadow(0 0 30px rgba(0, 245, 212, 0.8));
+        }
+
+        .loading-text {
+            color: rgba(0, 245, 212, 0.8);
+            font-size: 0.9rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+        }
+
+        .loading-progress {
+            width: 200px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 1px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #00f5d4;
+            box-shadow: 0 0 10px #00f5d4;
+        }
+
+        /* Click Particles */
+        .click-particle {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Mouse Trail */
+        .mouse-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 1px solid rgba(0, 245, 212, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading">
+        <div class="loading-container">
+            <svg class="loading-blob" viewBox="0 0 100 100">
+                <path id="loading-path" d="M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10"/>
+            </svg>
+        </div>
+        <div class="loading-text">Dimensionen Laden</div>
+        <div class="loading-progress">
+            <div class="loading-progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Audio Toggle -->
+    <button id="audio-toggle" onclick="Journey.toggleAudio()">🔊</button>
+
+    <!-- Collectibles -->
+    <div id="collectibles-container">
+        <div class="collectible" data-id="wisdom" title="Weisheit">📜</div>
+        <div class="collectible" data-id="courage" title="Mut">🔥</div>
+        <div class="collectible" data-id="hope" title="Hoffnung">✨</div>
+        <div class="collectible" data-id="truth" title="Wahrheit">👁️</div>
+    </div>
+
+    <!-- SVG Background -->
+    <svg id="svg-background" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <filter id="glow">
+                <feGaussianBlur stdDeviation="30" result="coloredBlur"/>
+                <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+            </filter>
+        </defs>
+        <path id="morphing-shape" d="M0,0 L1920,0 L1920,1080 L0,1080 Z" filter="url(#glow)"/>
+    </svg>
+
+    <!-- Chromatic Aberration -->
+    <canvas id="chromatic-overlay"></canvas>
+
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Layer -->
+    <div id="ui-layer"></div>
+
+    <!-- Progress -->
+    <div id="progress-container">
+        <div class="nav-hint">Wähle ein Portal</div>
+        <div id="progress-ring">
+            <div id="progress-fill"></div>
+        </div>
+    </div>
+
+    <!-- Station Dots -->
+    <div id="station-dots"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="anime.umd.min.js"></script>
+
+    <script>
+        // ==================================================================
+        // ISONOMIA MAXIMUM EDITION
+        // Alles auf Maximum: Post-Processing, Sound, Shader, Gameplay
+        // ==================================================================
+
+        const Journey = {
+            scene: null,
+            camera: null,
+            renderer: null,
+            composer: null,
+            currentStation: 0,
+            isTransitioning: false,
+            audioEnabled: true,
+            audioContext: null,
+            oscillators: [],
+            mousePos: { x: 0, y: 0 },
+            collected: new Set(),
+            
+            // Organische Blob-Formen
+            blobShapes: [
+                'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
+                'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
+                'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
+                'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
+            ],
+
+            backgroundShapes: {
+                awakening: 'M0,0 L1920,0 L1920,1080 L0,1080 Z',
+                system_chaos: 'M960,200 L1720,540 L960,880 L200,540 Z',
+                power_void: 'M960,100 C1400,100 1700,400 1700,540 C1700,680 1400,980 960,980 C520,980 220,680 220,540 C220,400 520,100 960,100',
+                fear_vortex: 'M960,540 m-400,0 a400,400 0 1,0 800,0 a400,400 0 1,0 -800,0',
+                elite_pyramid: 'M960,200 L1400,800 L520,800 Z',
+                solution_realm: 'M200,200 Q960,100 1720,200 Q1820,540 1720,880 Q960,980 200,880 Q100,540 200,200',
+                action_nexus: 'M400,400 L1520,400 L1520,680 L400,680 Z'
+            },
+
+            stationData: [
+                {
+                    id: 'awakening',
+                    position: { x: 0, y: 0, z: 0 },
+                    title: 'Das Erwachen',
+                    text: 'Du stehst am Anfang. Vor dir liegt ein Pfad durch die Dimensionen der Demokratie.',
+                    color: '#00f5d4',
+                    bgShape: 'awakening',
+                    soundFreq: 110, // A2
+                    collectible: 'wisdom',
+                    portals: [
+                        { label: 'System-Frust', target: 'system_chaos', color: '#ff6b9d' },
+                        { label: 'Machtlosigkeit', target: 'power_void', color: '#00f5d4' },
+                        { label: 'Zukunfts-Angst', target: 'fear_vortex', color: '#ffd700' }
+                    ]
+                },
+                {
+                    id: 'system_chaos',
+                    position: { x: 0, y: 0, z: -100 },
+                    title: 'Das Chaos',
+                    text: 'Das System funktioniert nicht zufällig schlecht. Es ist so gebaut.',
+                    color: '#ff6b9d',
+                    bgShape: 'system_chaos',
+                    soundFreq: 146.83, // D3
+                    collectible: 'truth',
+                    portals: [
+                        { label: 'Tiefer blicken', target: 'elite_pyramid', color: '#ffffff' },
+                        { label: 'Weg hier', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'power_void',
+                    position: { x: 100, y: 0, z: -50 },
+                    title: 'Die Leere',
+                    text: 'Deine Stimme verschwindet im Nichts. Du wählst, aber du entscheidest nicht.',
+                    color: '#00f5d4',
+                    bgShape: 'power_void',
+                    soundFreq: 196, // G3
+                    collectible: 'courage',
+                    portals: [
+                        { label: 'Aufstehen', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'fear_vortex',
+                    position: { x: -100, y: 0, z: -50 },
+                    title: 'Der Strudel',
+                    text: 'AfD. Klimakollaps. Krieg. Aber was, wenn das System selbst die Krise schafft?',
+                    color: '#ffd700',
+                    bgShape: 'fear_vortex',
+                    soundFreq: 261.63, // C4
+                    collectible: 'hope',
+                    portals: [
+                        { label: 'Ausbruch', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'elite_pyramid',
+                    position: { x: 0, y: 50, z: -200 },
+                    title: 'Die Pyramide',
+                    text: '87% Akademiker im Parlament. 20% in der Bevölkerung. Das ist keine Repräsentation.',
+                    color: '#ffffff',
+                    bgShape: 'elite_pyramid',
+                    soundFreq: 329.63, // E4
+                    portals: [
+                        { label: 'Die Alternative', target: 'solution_realm', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'solution_realm',
+                    position: { x: 0, y: 0, z: -300 },
+                    title: 'Das Reich des Loses',
+                    text: 'Athen. 200 Jahre. Keine Wahlen. 500 Bürger. Ausgelost. Wahre Repräsentation.',
+                    color: '#00f5d4',
+                    bgShape: 'solution_realm',
+                    soundFreq: 392, // G4
+                    portals: [
+                        { label: 'Wie funktioniert es?', target: 'action_nexus', color: '#00f5d4' }
+                    ]
+                },
+                {
+                    id: 'action_nexus',
+                    position: { x: 0, y: 0, z: -400 },
+                    title: 'Der Nexus',
+                    text: 'Du hast gesehen. Jetzt: Handle. Lokale Räte. Dialog. Politischer Druck.',
+                    color: '#ffd700',
+                    bgShape: 'action_nexus',
+                    soundFreq: 440, // A4
+                    portals: [
+                        { label: 'Lokale Räte', target: 'awakening', color: '#00f5d4' },
+                        { label: 'Dialog', target: 'awakening', color: '#00f5d4' },
+                        { label: 'Politik', target: 'awakening', color: '#00f5d4' }
+                    ]
+                }
+            ],
+
+            init() {
+                this.createScene();
+                this.createParticles();
+                this.initAudio();
+                this.setupMouseInteraction();
+                this.setupUI();
+                this.animateLoading();
+            },
+
+            createScene() {
+                this.scene = new THREE.Scene();
+                this.scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.camera.position.set(0, 0, 50);
+
+                this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                this.renderer.toneMapping = THREE.ReinhardToneMapping;
+                document.getElementById('canvas-container').appendChild(this.renderer.domElement);
+
+                window.addEventListener('resize', () => this.onResize());
+            },
+
+            createParticles() {
+                // Haupt-Partikel-System
+                const geometry = new THREE.BufferGeometry();
+                const count = 5000;
+                const positions = new Float32Array(count * 3);
+                const colors = new Float32Array(count * 3);
+                const sizes = new Float32Array(count);
+
+                for (let i = 0; i < count; i++) {
+                    const i3 = i * 3;
+                    const t = i / count;
+                    
+                    // Spiral-Formation
+                    const angle = t * Math.PI * 10;
+                    const radius = 50 + t * 200;
+                    
+                    positions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 100;
+                    positions[i3 + 1] = (Math.random() - 0.5) * 200;
+                    positions[i3 + 2] = -t * 500 + Math.sin(angle) * 50;
+
+                    const color = new THREE.Color();
+                    color.setHSL(0.45 + Math.random() * 0.1, 0.9, 0.5 + Math.random() * 0.3);
+                    colors[i3] = color.r;
+                    colors[i3 + 1] = color.g;
+                    colors[i3 + 2] = color.b;
+
+                    sizes[i] = Math.random() * 3 + 1;
+                }
+
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+                const material = new THREE.PointsMaterial({
+                    size: 3,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.9,
+                    blending: THREE.AdditiveBlending,
+                    sizeAttenuation: true
+                });
+
+                this.particleSystem = new THREE.Points(geometry, material);
+                this.scene.add(this.particleSystem);
+
+                // Animation
+                this.animateParticles();
+            },
+
+            animateParticles() {
+                // Rotation
+                anime({
+                    targets: this.particleSystem.rotation,
+                    y: [0, Math.PI * 2],
+                    duration: 120000,
+                    easing: 'linear',
+                    loop: true
+                });
+
+                // Partikel-Explosion bei Station-Wechsel
+                this.particleExplosion = () => {
+                    const positions = this.particleSystem.geometry.attributes.position.array;
+                    
+                    for (let i = 0; i < 100; i++) {
+                        const idx = Math.floor(Math.random() * 1000);
+                        const i3 = idx * 3;
+                        
+                        anime({
+                            targets: positions,
+                            [i3 + 2]: positions[i3 + 2] + 200,
+                            duration: 1000,
+                            easing: 'easeOutExpo',
+                            complete: () => {
+                                positions[i3 + 2] -= 200;
+                            }
+                        });
+                    }
+                };
+            },
+
+            initAudio() {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                } catch(e) {
+                    console.log('Web Audio API not supported');
+                }
+            },
+
+            playStationSound(frequency) {
+                if (!this.audioEnabled || !this.audioContext) return;
+                
+                // Stop previous oscillators
+                this.oscillators.forEach(osc => {
+                    try { osc.stop(); } catch(e) {}
+                });
+                this.oscillators = [];
+
+                // Create drone sound
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                const filter = this.audioContext.createBiquadFilter();
+                
+                osc.type = 'sine';
+                osc.frequency.value = frequency;
+                
+                filter.type = 'lowpass';
+                filter.frequency.value = 800;
+                
+                gain.gain.value = 0.05;
+                gain.gain.exponentialRampToValueAtTime(0.08, this.audioContext.currentTime + 2);
+                
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.audioContext.destination);
+                
+                osc.start();
+                this.oscillators.push(osc);
+
+                // Add harmonics
+                const osc2 = this.audioContext.createOscillator();
+                const gain2 = this.audioContext.createGain();
+                osc2.type = 'triangle';
+                osc2.frequency.value = frequency * 1.5;
+                gain2.gain.value = 0.02;
+                osc2.connect(gain2);
+                gain2.connect(this.audioContext.destination);
+                osc2.start();
+                this.oscillators.push(osc2);
+            },
+
+            playPortalHoverSound() {
+                if (!this.audioEnabled || !this.audioContext) return;
+                
+                const osc = this.audioContext.createOscillator();
+                const gain = this.audioContext.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.value = 440;
+                osc.frequency.exponentialRampToValueAtTime(880, this.audioContext.currentTime + 0.1);
+                
+                gain.gain.value = 0.03;
+                gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(this.audioContext.destination);
+                
+                osc.start();
+                osc.stop(this.audioContext.currentTime + 0.3);
+            },
+
+            toggleAudio() {
+                this.audioEnabled = !this.audioEnabled;
+                const btn = document.getElementById('audio-toggle');
+                btn.textContent = this.audioEnabled ? '🔊' : '🔇';
+                btn.classList.toggle('muted', !this.audioEnabled);
+                
+                if (!this.audioEnabled) {
+                    this.oscillators.forEach(osc => {
+                        try { osc.stop(); } catch(e) {}
+                    });
+                } else {
+                    this.playStationSound(this.stationData[this.currentStation].soundFreq);
+                }
+            },
+
+            setupMouseInteraction() {
+                // Mouse trail
+                document.addEventListener('mousemove', (e) => {
+                    this.mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
+                    this.mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+                    // Create trail
+                    if (Math.random() > 0.7) {
+                        this.createMouseTrail(e.clientX, e.clientY);
+                    }
+
+                    // Parallax effect on camera
+                    if (this.camera && !this.isTransitioning) {
+                        this.camera.position.x += (this.mousePos.x * 5 - this.camera.position.x) * 0.05;
+                        this.camera.position.y += (this.mousePos.y * 5 - this.camera.position.y) * 0.05;
+                    }
+                });
+
+                // Click particles
+                document.addEventListener('click', (e) => {
+                    this.createClickExplosion(e.clientX, e.clientY);
+                });
+            },
+
+            createMouseTrail(x, y) {
+                const trail = document.createElement('div');
+                trail.className = 'mouse-trail';
+                trail.style.left = x + 'px';
+                trail.style.top = y + 'px';
+                document.body.appendChild(trail);
+
+                anime({
+                    targets: trail,
+                    scale: [1, 0],
+                    opacity: [0.5, 0],
+                    duration: 800,
+                    easing: 'easeOutExpo',
+                    complete: () => trail.remove()
+                });
+            },
+
+            createClickExplosion(x, y) {
+                const colors = ['#00f5d4', '#ff6b9d', '#ffd700', '#ffffff'];
+                
+                for (let i = 0; i < 12; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'click-particle';
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.boxShadow = `0 0 10px ${particle.style.background}`;
+                    document.body.appendChild(particle);
+
+                    const angle = (i / 12) * Math.PI * 2;
+                    const distance = 50 + Math.random() * 100;
+
+                    anime({
+                        targets: particle,
+                        translateX: Math.cos(angle) * distance,
+                        translateY: Math.sin(angle) * distance,
+                        scale: [1, 0],
+                        opacity: [1, 0],
+                        duration: 600 + Math.random() * 400,
+                        easing: 'easeOutExpo',
+                        complete: () => particle.remove()
+                    });
+                }
+            },
+
+            collectItem(id) {
+                if (this.collected.has(id)) return;
+                
+                this.collected.add(id);
+                const el = document.querySelector(`[data-id="${id}"]`);
+                if (el) {
+                    el.classList.add('collected');
+                    
+                    // Sound
+                    if (this.audioEnabled && this.audioContext) {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        osc.frequency.value = 880;
+                        gain.gain.value = 0.1;
+                        gain.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.5);
+                        osc.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        osc.start();
+                        osc.stop(this.audioContext.currentTime + 0.5);
+                    }
+
+                    // Confetti
+                    const rect = el.getBoundingClientRect();
+                    this.createClickExplosion(rect.left + 20, rect.top + 20);
+                }
+            },
+
+            animateLoading() {
+                // Loading progress
+                anime({
+                    targets: '.loading-progress-bar',
+                    width: ['0%', '100%'],
+                    duration: 2000,
+                    easing: 'easeInOutQuad'
+                });
+
+                // Loading blob morphing
+                const loadingPath = document.getElementById('loading-path');
+                
+                anime({
+                    targets: loadingPath,
+                    d: this.blobShapes,
+                    duration: 2000,
+                    easing: 'easeInOutQuad',
+                    direction: 'alternate',
+                    loop: true
+                });
+
+                anime({
+                    targets: '.loading-blob',
+                    rotate: 360,
+                    duration: 8000,
+                    easing: 'linear',
+                    loop: true
+                });
+
+                setTimeout(() => {
+                    document.getElementById('loading').classList.add('hidden');
+                    this.showStation(0);
+                    
+                    // Start render loop
+                    this.animate();
+                }, 2500);
+            },
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+                
+                // Particle wave effect
+                if (this.particleSystem) {
+                    const positions = this.particleSystem.geometry.attributes.position.array;
+                    const time = Date.now() * 0.001;
+                    
+                    for (let i = 0; i < 100; i++) {
+                        const idx = Math.floor(Math.random() * 1000);
+                        const i3 = idx * 3;
+                        positions[i3 + 1] += Math.sin(time + idx) * 0.1;
+                    }
+                    
+                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
+                }
+
+                this.renderer.render(this.scene, this.camera);
+            },
+
+            morphBackground(shapeKey) {
+                const shape = document.getElementById('morphing-shape');
+                const newPath = this.backgroundShapes[shapeKey] || this.backgroundShapes.awakening;
+                
+                anime({
+                    targets: shape,
+                    d: newPath,
+                    duration: 2500,
+                    easing: 'easeInOutElastic(1, .6)'
+                });
+
+                const station = this.stationData.find(s => s.bgShape === shapeKey);
+                if (station) {
+                    anime({
+                        targets: shape,
+                        fill: `rgba(${this.hexToRgb(station.color)}, 0.05)`,
+                        duration: 2000,
+                        easing: 'easeOutQuad'
+                    });
+                }
+            },
+
+            hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? 
+                    `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+                    '0, 245, 212';
+            },
+
+            setupUI() {
+                const dotsContainer = document.getElementById('station-dots');
+                this.stationData.forEach((_, index) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'dot-wrapper';
+                    
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.dataset.index = index;
+                    
+                    wrapper.appendChild(dot);
+                    dotsContainer.appendChild(wrapper);
+                });
+
+                this.updateProgress();
+            },
+
+            showStation(index) {
+                if (index < 0 || index >= this.stationData.length) return;
+                
+                this.currentStation = index;
+                const data = this.stationData[index];
+                
+                // Collectible
+                if (data.collectible) {
+                    this.collectItem(data.collectible);
+                }
+
+                // Audio
+                this.playStationSound(data.soundFreq);
+
+                // Background
+                this.morphBackground(data.bgShape);
+
+                // UI
+                this.updateUI(data);
+                this.updateDots(index);
+                this.updateProgress();
+
+                // Camera with elastic easing
+                anime({
+                    targets: this.camera.position,
+                    x: data.position.x,
+                    y: data.position.y,
+                    z: data.position.z + 40,
+                    duration: 2000,
+                    easing: 'easeOutElastic(1, .7)'
+                });
+
+                // Particle explosion
+                if (this.particleExplosion) {
+                    this.particleExplosion();
+                }
+            },
+
+            updateUI(data) {
+                const ui = document.getElementById('ui-layer');
+                ui.innerHTML = '';
+
+                const textContainer = document.createElement('div');
+                textContainer.className = 'station-text';
+
+                const title = document.createElement('h1');
+                title.className = 'station-title';
+                title.style.color = data.color;
+                
+                data.title.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = char === ' ' ? '\u00A0' : char;
+                    title.appendChild(span);
+                });
+
+                const subtitle = document.createElement('p');
+                subtitle.className = 'station-subtitle';
+                subtitle.textContent = data.text;
+
+                textContainer.appendChild(title);
+                textContainer.appendChild(subtitle);
+                ui.appendChild(textContainer);
+
+                if (data.portals) {
+                    const portalContainer = document.createElement('div');
+                    portalContainer.className = 'portal-container';
+
+                    data.portals.forEach((portal, i) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'portal-wrapper';
+                        wrapper.style.color = portal.color;
+                        
+                        const glow = document.createElement('div');
+                        glow.className = 'portal-glow';
+                        glow.style.color = portal.color;
+                        
+                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.className = 'portal-svg';
+                        svg.setAttribute('viewBox', '0 0 100 100');
+                        
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        path.className = 'portal-shape';
+                        path.setAttribute('d', this.blobShapes[0]);
+                        
+                        svg.appendChild(path);
+                        
+                        const label = document.createElement('span');
+                        label.className = 'portal-label';
+                        label.textContent = portal.label;
+
+                        wrapper.appendChild(glow);
+                        wrapper.appendChild(svg);
+                        wrapper.appendChild(label);
+                        
+                        wrapper.addEventListener('mouseenter', () => {
+                            this.playPortalHoverSound();
+                            anime({
+                                targets: path,
+                                d: this.blobShapes[2],
+                                duration: 800,
+                                easing: 'easeOutElastic(1, .6)'
+                            });
+                        });
+                        
+                        wrapper.addEventListener('mouseleave', () => {
+                            anime({
+                                targets: path,
+                                d: this.blobShapes[0],
+                                duration: 600,
+                                easing: 'easeOutQuad'
+                            });
+                        });
+                        
+                        wrapper.addEventListener('click', () => this.travelToStation(portal.target));
+                        portalContainer.appendChild(wrapper);
+
+                        anime({
+                            targets: path,
+                            d: [this.blobShapes[1], this.blobShapes[2], this.blobShapes[3], this.blobShapes[0]],
+                            duration: 8000 + i * 2000,
+                            easing: 'easeInOutQuad',
+                            direction: 'alternate',
+                            loop: true,
+                            delay: i * 500
+                        });
+                    });
+
+                    ui.appendChild(portalContainer);
+                }
+
+                requestAnimationFrame(() => {
+                    textContainer.classList.add('active');
+
+                    anime({
+                        targets: '.station-title .char',
+                        translateY: [100, 0],
+                        rotateX: [-90, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(40, { from: 'center' }),
+                        duration: 1200,
+                        easing: 'easeOutElastic(1, .6)'
+                    });
+
+                    anime({
+                        targets: '.station-subtitle',
+                        translateY: [30, 0],
+                        opacity: [0, 1],
+                        duration: 1000,
+                        delay: 600,
+                        easing: 'easeOutExpo'
+                    });
+
+                    anime({
+                        targets: '.portal-wrapper',
+                        scale: [0, 1],
+                        opacity: [0, 1],
+                        delay: anime.stagger(150, { start: 800 }),
+                        duration: 1000,
+                        easing: 'easeOutElastic(1, .5)'
+                    });
+                });
+            },
+
+            updateDots(index) {
+                document.querySelectorAll('.dot').forEach((dot, i) => {
+                    dot.classList.remove('active', 'visited');
+                    if (i === index) {
+                        dot.classList.add('active');
+                    } else if (i < index) {
+                        dot.classList.add('visited');
+                    }
+                });
+
+                anime({
+                    targets: '.dot',
+                    scale: [{ value: 1.3 }, { value: 1 }],
+                    delay: anime.stagger(50, { grid: [1, 7], from: index }),
+                    easing: 'easeOutElastic(1, .5)'
+                });
+            },
+
+            updateProgress() {
+                const progress = ((this.currentStation + 1) / this.stationData.length) * 100;
+                
+                anime({
+                    targets: '#progress-fill',
+                    width: `${progress}%`,
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
+            },
+
+            travelToStation(stationId) {
+                if (this.isTransitioning) return;
+                
+                const targetIndex = this.stationData.findIndex(s => s.id === stationId);
+                if (targetIndex === -1) return;
+                
+                this.isTransitioning = true;
+
+                anime.timeline({
+                    complete: () => {
+                        this.showStation(targetIndex);
+                        this.isTransitioning = false;
+                    }
+                })
+                .add({
+                    targets: '.station-title .char',
+                    translateY: [0, -100],
+                    rotateX: [0, 90],
+                    opacity: [1, 0],
+                    delay: anime.stagger(30, { from: 'last' }),
+                    duration: 600,
+                    easing: 'easeInExpo'
+                })
+                .add({
+                    targets: '.station-subtitle',
+                    translateY: [0, -30],
+                    opacity: [1, 0],
+                    duration: 400,
+                    easing: 'easeInQuad'
+                }, '-=400')
+                .add({
+                    targets: '.portal-wrapper',
+                    scale: [1, 0],
+                    opacity: [1, 0],
+                    delay: anime.stagger(50, { from: 'last' }),
+                    duration: 500,
+                    easing: 'easeInBack'
+                }, '-=300');
+            },
+
+            onResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        };
+
+        // Start
+        Journey.init();
+    </script>
+</body>
+</html>
