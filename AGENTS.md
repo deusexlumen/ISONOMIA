@@ -2,15 +2,23 @@
 
 ## Project Overview
 
-**ISONOMIA** ("Projekt Kronos") is an interactive German-language web application that presents a philosophical narrative about political systems, democracy, and the ancient Greek concept of *Isonomie* (equality of political rights). The project translates Nonviolent Communication (GfK - "Gewaltfreie Kommunikation") into an algorithmic state machine, using visual entities (particles) as mathematical metaphors for democratic concepts.
-
-The application guides users through a dialectical narrative exploring themes of:
-- The failure of electoral systems to prevent dysfunction and polarization
-- Political disenfranchisement and the feeling of powerlessness
-- Elite over-representation in governance
-- Sortition (lottery-based democracy) as an alternative model
+**ISONOMIA** ("Projekt Kronos") ist eine immersive, interaktive deutsche Web-Erfahrung, die Nutzer durch eine psychologisch optimierte Reise führt, um das Konzept der **Losdemokratie (Sortition)** verständlich zu machen. Die Anwendung übersetzt Gewaltfreie Kommunikation (GfK) in eine algorithmische State-Machine und nutzt visuelle Entitäten (Partikel) als mathematische Metaphern für demokratische Konzepte.
 
 **Repository**: https://github.com/deusexlumen/ISONOMIA
+
+### Kernproblem & Lösung
+
+Das Projekt adressiert die kognitive Dissonanz zu Losdemokratie:
+- Menschen haben gelernt "Wahlen = Demokratie"
+- Losdemokratie klingt auf den ersten Blick "verrückt"
+- Sofortige Ablehnung ohne Auseinandersetzung
+
+Die Lösung ist eine **psychologische Reise-Architektur**:
+1. Empathie aufbauen ("Wo drückt der Schuh?")
+2. Validation ("Deine Angst ist real")
+3. Dekonstruktion des bestehenden Systems
+4. Alternative als Lösung präsentieren
+5. Personalisierte Handlungsaufforderung
 
 ---
 
@@ -19,8 +27,8 @@ The application guides users through a dialectical narrative exploring themes of
 | Component | Technology | Version | Notes |
 |-----------|------------|---------|-------|
 | Core | HTML5, CSS3, Vanilla JavaScript | ES2015+ | Single-file architecture |
-| Animation Library | Anime.js | v4.2.2 | UMD bundle used |
 | 3D Engine | Three.js | v0.160.0 | Loaded from CDN (unpkg.com) |
+| Animation | Anime.js | v4.2.2 | UMD bundle (local file) |
 | Fonts | Google Fonts | - | Cinzel (display), Inter (body) |
 | Build System | None | - | No bundler, no build step |
 | Package Manager | None | - | Direct file inclusion |
@@ -28,13 +36,11 @@ The application guides users through a dialectical narrative exploring themes of
 
 ### Anime.js Distribution Files
 
-The project includes Anime.js in multiple bundled formats:
-
 | File | Format | Size | Use Case |
 |------|--------|------|----------|
-| `anime.esm.js` | ES Module (unminified) | 316 KB | Development, tree-shaking |
-| `anime.esm.min.js` | ES Module (minified) | 89 KB | Production ESM builds |
-| `anime.umd.js` | UMD (unminified) | 333 KB | Universal module compatibility |
+| `anime.esm.js` | ES Module (unminified) | 316 KB | Development |
+| `anime.esm.min.js` | ES Module (minified) | 89 KB | Production ESM |
+| `anime.umd.js` | UMD (unminified) | 333 KB | Development |
 | `anime.umd.min.js` | UMD (minified) | 89 KB | **Production, currently used** |
 
 ---
@@ -43,237 +49,199 @@ The project includes Anime.js in multiple bundled formats:
 
 ```
 ISONOMIA/
-├── index.html              # Single-file application (~1,361 lines)
-├── anime.esm.js           # Anime.js ES Module (development)
-├── anime.esm.min.js       # Anime.js ES Module (production)
-├── anime.umd.js           # Anime.js UMD (development)
-├── anime.umd.min.js       # Anime.js UMD (production) - actively used
-├── validate.js            # Node.js validation script for testing
-├── README.md              # Project description (German)
-├── AGENTS.md              # This file
-├── isonomia_*.png         # Screenshot/test images
-│   ├── isonomia_start.png
-│   ├── isonomia_vault.png
-│   ├── isonomia_3d_*.png  # 3D visualization screenshots
-│   └── ...
-├── AUDIT*.md              # Various audit documentation files
-│   ├── AUDIT.md
-│   ├── AUDIT_FINAL.md
-│   ├── 3D_AUDIT_FINAL.md
-│   └── ...
-├── TEST_RESULTS_FINAL.md  # Final test results documentation
-└── .git/                  # Git repository
+├── index.html                    # Hauptdatei - GOD MODE EDITION (~1,223 lines)
+├── anime.umd.min.js              # Anime.js Animation Library (production)
+├── anime.esm.js                  # Anime.js ES Module (development)
+├── anime.esm.min.js              # Anime.js ES Module minified
+├── anime.umd.js                  # Anime.js UMD (development)
+├── README.md                     # Kurzbeschreibung (Deutsch)
+├── AGENTS.md                     # Diese Datei
+├── PROJECT_STATUS.md             # Detaillierter Projektstatus
+├── index_immersive.html          # Backup: Erste 3D-Version
+├── index_immersive_v2.html       # Backup: Mit Anime.js Effekten
+├── index_immersive_GODMODE.html  # Backup: Maximum Edition
+├── index_immersive_MAXIMUM.html  # Backup: Weitere Variante
+├── index_KI_DEMO.html            # Experimentell: KI-Prototyp
+├── index_backup.html             # Backup: Ursprüngliche Version
+├── index_new.html                # Backup: Zwischenversion
+├── isonomia_*.png                # Screenshots/Test-Bilder
+├── audit_*.png                   # Audit Screenshots
+├── immersive_*.png               # Immersive Version Screenshots
+├── new_*.png                     # Neue Version Screenshots
+├── test_*.png                    # Test Screenshots
+├── AUDIT*.md                     # Audit Dokumentationen
+├── 3D_*.md                       # 3D-Migrations-Analysen
+├── DECISION_TREE_*.md            # Entscheidungsbaum-Analysen
+├── FINAL_*.md                    # Finale Audit-Berichte
+├── .git/                         # Git Repository
+├── assets/                       # Leer (für zukünftige Assets)
+├── docs/                         # Leer (für zukünftige Dokumentation)
+└── src/                          # Leer (für zukünftige Source-Dateien)
 ```
 
-### Architecture
+---
 
-This is a **single-file application** - all HTML structure, CSS styling (~375 lines), and JavaScript logic (~985 lines) are contained within `index.html`. There is no module bundler, no separate source directories, and no build process.
+## Architecture
 
-**HTML Structure:**
+### Single-File Application
+
+Die gesamte Anwendung befindet sich in **einer einzigen Datei** (`index.html`):
+- **HTML**: ~50 lines
+- **CSS**: ~400 lines (im `<style>` Block)
+- **JavaScript**: ~770 lines (im `<script>` Block)
+
+**HTML Struktur:**
 ```html
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <!-- Meta tags, viewport, title -->
-    <!-- Inline CSS (~375 lines in <style>) -->
+    <!-- Meta, Fonts, inline CSS -->
 </head>
 <body>
-    <div class="noise-overlay"></div>           <!-- Noise texture overlay -->
-    <div id="particle-container"></div>         <!-- Background DOM particles -->
-    <canvas id="three-canvas"></canvas>         <!-- Three.js 3D canvas -->
-    <button class="back-btn" id="back-btn">     <!-- Navigation back button -->
-    <button class="audio-toggle" id="audio-toggle">  <!-- Audio toggle -->
-    <main id="stage" role="main">               <!-- Content layer -->
-        <div id="content-layer"></div>          <!-- Dynamic narrative content -->
-    </main>
-    <script src="anime.umd.min.js"></script>
+    <!-- Loading Screen -->
+    <div id="loading">...</div>
+    
+    <!-- UI Controls -->
+    <button id="audio-toggle">...</button>
+    <div id="collectibles-container">...</div>
+    <div id="profile-panel">...</div>
+    
+    <!-- Post-Processing Overlays -->
+    <div id="vignette"></div>
+    <div id="motion-blur"></div>
+    <canvas id="chromatic-canvas"></canvas>
+    
+    <!-- 3D Canvas -->
+    <div id="canvas-container"></div>
+    
+    <!-- UI Layer -->
+    <div id="ui-layer"></div>
+    
+    <!-- Progress -->
+    <div id="progress-container">...</div>
+    
+    <!-- Scripts -->
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <!-- Application Logic (~985 lines in <script>) -->
+    <script src="anime.umd.min.js"></script>
+    <script>
+        // Application Logic
+    </script>
 </body>
 </html>
 ```
 
----
+### JavaScript Architektur
 
-## JavaScript Architecture
+**Hauptobjekt: `Journey`**
 
-### Module Organization
+| Eigenschaft | Zweck |
+|-------------|-------|
+| `scene` | Three.js Szene |
+| `camera` | Three.js Kamera |
+| `renderer` | Three.js Renderer |
+| `particleSystem` | 8000 Partikel System |
+| `currentStation` | Aktuelle Station (Index) |
+| `profile` | Nutzerprofil (Rebellion, Empathie, Strategie) |
+| `collected` | Gesammelte Items (Set) |
+| `stationData[]` | Array aller 7 Stationen |
+| `textVariations` | Dynamische Text-Varianten pro Station |
+| `archetypes[]` | Archetypen-Definitionen |
 
-The JavaScript code is organized into logical sections as modular objects:
+**Stationen (Station Data):**
 
-| Section | Object | Purpose |
-|---------|--------|---------|
-| 1 | `narrativeData` | Narrative state machine (~45 nodes) |
-| 2 | `Storage` | localStorage persistence |
-| 3 | `UserProfile` | User behavior profiling & tracking |
-| 4 | `ISONOMIA` | Main application controller |
+| Index | ID | Name | Zweck |
+|-------|-----|------|-------|
+| 0 | `awakening` | Das Erwachen | Einstieg, Empathie aufbauen |
+| 1 | `system_chaos` | Das Chaos | Dekonstruktion Wahlsystem |
+| 2 | `power_void` | Die Leere | Machtlosigkeit validieren |
+| 3 | `fear_vortex` | Der Strudel | Angst kanalisieren |
+| 4 | `elite_pyramid` | Die Pyramide | Klassenfrage aufzeigen |
+| 5 | `solution_realm` | Das Reich des Loses | Losdemokratie als Lösung |
+| 6 | `action_nexus` | Der Nexus | Handlungsaufforderung |
 
-### Narrative State Machine
-
-The narrative is defined in `narrativeData` object with nodes representing dialog states:
-
-**Narrative Phases:**
-| Phase | Description | Key Nodes |
-|-------|-------------|-----------|
-| `entry` | "Wo drückt der Schuh?" - Problem identification | start |
-| `reveal` | System analysis and truth revelation | path_system_frust, reveal_system_truth, paradox_vote |
-| `empathy` | Validation of user feelings | path_powerless, path_fear |
-| `transition` | Bridges between problem and solution | recognition_no_choice, reveal_danger |
-| `solution` | Sortition/Sortition democracy explanation | solution_intro, explain_sortition, explain_mechanics |
-| `objection` | Handling common objections | objection_crazy, objection_incompetence, objection_job |
-| `action` | Call to action | action_path, action_talk, action_commit |
-| `vault` | Resource library | vault_books |
-| `exit` | Final state and restart | final |
-
-**Node Structure:**
+**Station-Struktur:**
 ```javascript
 {
-    "nodeKey": {
-        "text": "Display text...",           // Primary heading
-        "subtext": "Explanatory text...",    // Secondary paragraph
-        "options": [                          // Button options
-            { 
-                "label": "Button text", 
-                "next": "targetNode",
-                "profileSet": { "painPoint": "value", "archetype": "value" }
-            }
-        ],
-        "visual": "breathe",                  // Particle animation mode
-        "phase": "entry"                      // Narrative phase identifier
-    }
+    id: 'station_id',
+    position: { x, y, z },        // 3D Kamera-Position
+    title: 'Anzeige-Titel',
+    text: 'Anzeige-Text',         // oder 'dynamic' für KI-Text
+    color: '#00f5d4',             // Akzent-Farbe
+    soundFreq: 110,               // Audio-Frequenz
+    collectible: 'wisdom',        // Optional: Collectible-ID
+    statBoost: { rebellion: 25 }, // Profil-Stat-Boost
+    portals: [                    // Navigation-Optionen
+        { label: 'Text', target: 'next_id', color: '#ff6b9d', stat: 'rebellion' }
+    ]
 }
 ```
 
-**Visual Modes** (particle animation states):
-| Mode | Description | Color Scheme |
-|------|-------------|--------------|
-| `breathe` | Gentle pulsing, random positions | Cyan (#00f5d4) |
-| `tremble` | Subtle vibration | Cyan |
-| `chaos` | Chaotic dispersion | Cyan → Magenta |
-| `clash` | Two opposing groups (left vs right) | Cyan/Magenta split |
-| `pyramid` | Hierarchical structure, white elite dots | Cyan + White elite |
-| `grid` | Organized grid formation | Cyan |
+---
 
-### User Profiling System
+## Features
 
-`UserProfile` tracks:
-- `painPoint`: 'dysfunction' | 'powerlessness' | 'fear'
-- `archetype`: 'pragmatist' | 'idealist' | 'worrier'
-- `pathTaken[]`: Array of navigation steps
+### Visuelle Features
+- [x] 3D-Partikel-System (8000 Partikel)
+- [x] Organische Blob-Portale (SVG Morphing)
+- [x] Text-Splitting mit 3D-Rotation
+- [x] Elastic Kamera-Bewegungen
+- [x] Chromatic Aberration (Post-Processing)
+- [x] Motion Blur bei Transitionen
+- [x] Vignette-Overlay
+- [x] Mouse-Trail & Click-Explosionen
 
-Persisted to `sessionStorage` (cleared on browser close).
+### Audio Features
+- [x] Web Audio API Integration
+- [x] Pro-Station Soundscapes (verschiedene Frequenzen)
+- [x] Collectible-Sounds
+- [x] Audio Toggle (🔊/🔇)
 
-### Storage & Persistence
-
-**Session Persistence** (`localStorage`):
-- Key: `isonomia_session`
-- Stores: currentStep, history, timestamp, date
-- Expires after 24 hours
-
-**Profile Persistence** (`sessionStorage`):
-- Key: `isonomia_profile`
-- Stores: painPoint, archetype, pathTaken
+### Gameplay Features
+- [x] 6 Stationen mit Verzweigungen
+- [x] 4 Collectibles (Weisheit 📜, Mut 🔥, Hoffnung ✨, Wahrheit 👁️)
+- [x] Profil-System (Rebellion, Empathie, Strategie)
+- [x] 5 Archetypen (Revolutionär, Wächter, Architekt, Voyager, Katalysator)
+- [x] Progress-Bar
 
 ---
 
-## CSS Architecture
+## Design System
 
-### Design Tokens (CSS Custom Properties)
-
+### Farben
 ```css
-:root {
-    --bg: #050505;                    /* Dark background */
-    --bg-secondary: #0a0a0a;
-    --bg-tertiary: #111111;
-    
-    --cyan: #00f5d4;                  /* Primary accent */
-    --cyan-dim: rgba(0, 245, 212, 0.6);
-    --cyan-glow: rgba(0, 245, 212, 0.2);
-    
-    --magenta: #ff6b9d;               /* Secondary accent (conflict) */
-    --magenta-dim: rgba(255, 107, 157, 0.6);
-    --magenta-glow: rgba(255, 107, 157, 0.2);
-    
-    --gold: #ffd700;                  /* Special accent */
-    
-    --text-primary: rgba(255, 255, 255, 0.95);
-    --text-secondary: rgba(255, 255, 255, 0.7);
-    --text-tertiary: rgba(255, 255, 255, 0.5);
-    --text-muted: rgba(255, 255, 255, 0.35);
-    
-    --glass-bg: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-border-hover: rgba(0, 245, 212, 0.25);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    
-    --font-display: 'Cinzel', serif;
-    --font-primary: 'Inter', sans-serif;
-}
+--cyan: #00f5d4;        /* Hauptakzent - Hoffnung, Lösung */
+--magenta: #ff6b9d;     /* Chaos, Problem, Konflikt */
+--gold: #ffd700;        /* Wichtig, Action, Elite */
+--white: #ffffff;       /* Wahrheit, Neutral */
+--bg: #000000;          /* Hintergrund */
 ```
 
-### Component Classes
+### Typografie
+- **Überschriften**: Cinzel (Serif) - Elegant, antik
+- **Fließtext**: Inter (Sans) - Modern, lesbar
 
-| Class | Purpose |
-|-------|---------|
-| `#particle-container` | Fixed background layer for DOM particles |
-| `.dot` | Individual particle elements (80 instances) |
-| `#stage` | Centered content container |
-| `.gandalf-voice` | Narrative text styling |
-| `.haptic-btn` | Interactive buttons with hover effects |
-| `.section-label` | Phase indicator (small caps) |
-| `.back-btn` | Navigation back button (fixed position) |
-| `.audio-toggle` | Audio on/off toggle (fixed position) |
-| `.noise-overlay` | SVG noise texture overlay |
-
-### Z-Index Layers
-
-| Layer | Element | z-index |
-|-------|---------|---------|
-| 0 | Three.js Canvas | 0 |
-| 0 | Particle container | 0 |
-| 1 | Noise overlay | 1 |
-| 10 | Stage (content) | 10 |
-| 100 | Back button, Audio toggle | 100 |
+### Animation-Prinzipien
+- **Easing**: `easeOutElastic` für UI, `easeOutExpo` für Texte
+- **Dauer**: 800-1200ms für wichtige Transitionen
+- **Stagger**: 30-50ms Verzögerung zwischen Elementen
 
 ---
 
-## 3D Engine (Three.js)
-
-The application includes a basic Three.js integration:
-
-**Features:**
-- BufferGeometry particle system (200 particles)
-- Continuous rotation animation
-- Automatic fallback to 2D if WebGL unavailable
-- Responsive to window resize
-
-**Implementation:**
-- Creates Points geometry with random positions
-- Uses PointsMaterial with cyan color
-- Animation loop via requestAnimationFrame
-- Rotation: y += 0.0003, x += 0.0001 per frame
-
----
-
-## Build and Test Commands
+## Build and Development
 
 ### No Build Process
 
-This project has **no build step**. It can be opened directly in a browser by opening `index.html`.
-
-### Local Development
-
-Simply open `index.html` in any modern web browser:
+Dieses Projekt hat **keinen Build-Schritt**. Es kann direkt im Browser geöffnet werden:
 
 ```powershell
 # Windows
 start index.html
 
-# Or with Python server
+# Oder mit Python Server
 python -m http.server 8000
 ```
 
-Or serve with any static file server:
+Oder mit jedem anderen statischen Server:
 ```bash
 # Node.js
 npx serve .
@@ -282,135 +250,156 @@ npx serve .
 php -S localhost:8000
 ```
 
-### Testing
+### Lokale Entwicklung
 
-**No automated testing framework is configured.**
+1. Öffne `index.html` direkt im Browser
+2. Für CORS-Testung: Nutze einen lokalen Server
+3. Keine Hot-Reload notwendig - einfach Datei speichern und Browser refresh
 
-A basic Node.js validation script exists (`validate.js`) that checks for critical components:
+---
 
-```bash
-node validate.js
-```
+## Testing
 
-This script validates:
-- Presence of critical JavaScript components (UserProfile, narrativeData)
-- Proper method signatures
-- Narrative node count
-- Potential code issues
+### Kein Automatisiertes Testing
 
-**Manual testing checklist:**
-- [ ] All narrative paths navigable
-- [ ] Particle animations render correctly (2D mode)
-- [ ] 3D mode initializes when WebGL available
-- [ ] Buttons respond to clicks
-- [ ] Transition animations smooth
-- [ ] Mobile viewport displays correctly
-- [ ] Back button functions (also test Escape key)
-- [ ] Session persistence works (refresh page)
-- [ ] Audio toggle UI responds
+Es gibt **kein automatisiertes Testing Framework**. Manuelles Testing:
+
+**Checkliste:**
+- [ ] Alle Stationen durchklickbar
+- [ ] Partikel-Animation rendert korrekt
+- [ ] 3D-Modus initialisiert (WebGL verfügbar)
+- [ ] Portale reagieren auf Klicks
+- [ ] Transitionen sind smooth
+- [ ] Mobile Ansicht funktioniert
+- [ ] Audio Toggle funktioniert
+- [ ] Collectibles werden gesammelt
+- [ ] Profil-Panel zeigt Stats korrekt
+- [ ] Progress-Bar aktualisiert sich
+
+### Browser-Kompatibilität
+
+| Browser | Status | Hinweis |
+|---------|--------|---------|
+| Chrome | ✅ Vollständig | Empfohlen |
+| Firefox | ✅ Vollständig | - |
+| Safari | ⚠️ Teilweise | Web Audio API manchmal komisch |
+| Edge | ✅ Vollständig | - |
+| Mobile | ⚠️ Funktioniert | UI nicht optimiert für Touch |
+
+**Anforderungen:**
+- WebGL (für 3D)
+- Web Audio API
+- ES6+ JavaScript
 
 ---
 
 ## Code Style Guidelines
 
-### Language
+### Sprache
 
-- **All UI text is in German** - maintain this for any user-facing content
-- Comments are mixed German (narrative sections) and English (technical sections)
-- Code identifiers (variables, functions) are in English
+- **Alle UI-Texte sind auf Deutsch** - muss beibehalten werden
+- **Code-Kommentare**: Gemischt Deutsch (narrative Abschnitte) und Englisch (technische Abschnitte)
+- **Code-Identifier** (Variablen, Funktionen): Englisch
 
-### CSS Conventions
+### CSS Konventionen
 
-- CSS variables for theming in `:root`
-- BEM-like naming for classes (`.gandalf-voice`, `.haptic-btn`)
-- `will-change: transform, opacity` on animated elements for performance
-- Glassmorphism effects with backdrop-filter
+- CSS-Variablen für Farben in `:root`
+- Klassen-Namen: Kebab-case (`.portal-container`, `.station-title`)
+- IDs: Camel-case für JS-Referenzen (`#profile-panel`, `#audio-toggle`)
+- `will-change` auf animierten Elementen für Performance
 
-### JavaScript Conventions
+### JavaScript Konventionen
 
-- Module pattern with namespace objects (`ISONOMIA`, `UserProfile`, etc.)
-- Arrow functions for callbacks
-- Template literals for HTML generation
-- Event delegation for dynamic elements
-- XSS sanitization via `sanitize()` method
+- Ein globales Objekt (`Journey`) als Namespace
+- Arrow Functions für Callbacks
+- Template Literals für HTML-Generierung
+- Event Delegation für dynamische Elemente
 
----
+**Beispiel:**
+```javascript
+const Journey = {
+    currentStation: 0,
+    
+    init() {
+        this.createScene();
+        this.setupUI();
+    },
+    
+    travelToStation(stationId) {
+        // Implementation
+    }
+};
 
-## Mobile & Accessibility
-
-### Responsive Breakpoints
-
-- Mobile: `max-width: 768px`
-- Adjustments: Smaller typography, reduced padding, repositioned fixed buttons
-
-### Accessibility Features
-
-- Semantic HTML (`role="main"`, `role="article"`, `aria-live="polite"`)
-- ARIA labels on interactive elements
-- `prefers-reduced-motion` media query support
-- Keyboard navigation (ESC to go back)
-- Focus indicators on buttons
-
-### Audio
-
-- Audio toggle button present but audio implementation is visual-only placeholder
-- No actual Web Audio API integration currently active
+Journey.init();
+```
 
 ---
 
 ## Deployment
 
-Deploy as static files to any web host:
-- GitHub Pages
-- Netlify
-- Vercel
-- Any standard web server
+### Erforderliche Dateien
 
-**Required files for deployment**:
+Für Deployment werden nur diese Dateien benötigt:
 - `index.html`
-- `anime.umd.min.js` (critical dependency)
-- Three.js is loaded from CDN (no local file needed)
+- `anime.umd.min.js`
+- Three.js wird von CDN geladen
+
+### Hosting-Optionen
+
+1. **GitHub Pages** (empfohlen):
+   ```bash
+   git push origin main
+   # Aktiviere GitHub Pages in Repository Settings
+   ```
+
+2. **Vercel**:
+   ```bash
+   npm i -g vercel
+   vercel --prod
+   ```
+
+3. **Netlify**: Drag & Drop der Dateien
+
+4. **Jeder andere statische Host**
 
 ---
 
 ## Security Considerations
 
-- No server-side processing (static files only)
-- No user input collection beyond internal state tracking
-- No cookies used
-- XSS protection via `sanitize()` method using textContent
-- Data stored in `localStorage`/`sessionStorage` (client-side only)
-- Inline scripts/styles (CSP would require modifications)
+- Keine serverseitige Verarbeitung (nur statische Dateien)
+- Keine Benutzereingaben außer internem State-Tracking
+- Keine Cookies
+- XSS-Schutz durch `textContent` statt `innerHTML` für dynamische Inhalte
+- Daten werden nicht persistiert (nur Session-State)
+- Inline Scripts/Styles (CSP würde Modifikationen erfordern)
 
-**Known Issues**:
-- No Subresource Integrity (SRI) for Three.js CDN (see TEST_RESULTS_FINAL.md)
+### Bekannte Einschränkungen
+
+- Audio funktioniert erst nach User-Interaction (Browser-Policy)
+- Keine Subresource Integrity (SRI) für Three.js CDN
+- Mobile UI nicht optimiert
 
 ---
 
-## External Dependencies
+## Z-Index Layer
 
-| Library | Version | License | Source |
-|---------|---------|---------|--------|
-| Anime.js | v4.2.2 | MIT | Bundled files |
-| Three.js | v0.160.0 | MIT | CDN (unpkg.com) |
-| Google Fonts | - | OFL | fonts.googleapis.com |
-
-### CDN Dependencies
-
-The following are loaded from external CDN:
-```html
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-```
-
-For offline use, download and include locally.
+| Layer | Element | z-index |
+|-------|---------|---------|
+| 0 | Three.js Canvas | 1 |
+| 1 | Chromatic Canvas | 2 |
+| 2 | Vignette | 3 |
+| 3 | Motion Blur | 4 |
+| 10 | UI Layer | 10 |
+| 20 | Profile Panel, Collectibles, Audio Toggle | 20 |
+| 100 | Loading Screen | 1000 |
 
 ---
 
 ## Git History
 
-Recent commits:
 ```
+12e3249 Genesis Protocol
+9004bd0 update
 5998c6e Update title and narrative text in index.html
 18eb4e6 Refactor CSS and update narrative text in index.html
 983cfba Add files via upload
@@ -420,55 +409,29 @@ Recent commits:
 
 ---
 
-## Resources and References
+## Ressourcen
 
-- **GitHub Repository**: https://github.com/deusexlumen/ISONOMIA
-- **Anime.js Documentation**: https://animejs.com/documentation/
-- **Three.js Documentation**: https://threejs.org/docs/
-- **Project Name**: ISONOMIA (ἰσονομία) - Ancient Greek concept of political equality
-
----
-
-## Key Implementation Details
-
-### Particle System Architecture
-
-The application has dual particle systems:
-
-1. **DOM-based (2D primary)**:
-   - 80 div elements with class `.dot`
-   - Animated via Anime.js
-   - Colors: Cyan (#00f5d4), Magenta (#ff6b9d), White (#ffffff)
-
-2. **WebGL-based (3D secondary)**:
-   - Three.js Points with BufferGeometry
-   - 200 particles, cyan colored
-   - Continuous rotation animation
-   - Falls back gracefully if WebGL unavailable
-
-### State Transition Flow
-
-```
-User Click → Event Delegation → ISONOMIA.transition() → 
-  1. Update UserProfile if profileSet data present
-  2. Record path in pathTaken
-  3. Animate content out (blur + fade)
-  4. Update history and currentStep
-  5. Render new content
-  6. Animate content in
-  7. Apply visual mode → Update particles
-  8. Save to Storage
-```
-
-### Statistics (from TEST_RESULTS_FINAL.md)
-
-- Code lines: ~1,361
-- JavaScript modules: 4
-- Functions: ~50
-- Narrative nodes: ~45
-- Visual modes: 6
+- **Repository**: https://github.com/deusexlumen/ISONOMIA
+- **Three.js Docs**: https://threejs.org/docs/
+- **Anime.js Docs**: https://animejs.com/documentation/
+- **Projekt Name**: ISONOMIA (ἰσονομία) - Antikes griechisches Konzept politischer Gleichheit
 
 ---
 
-*Document Version: 2026-02-15*  
-*Project Version: Based on commit 5998c6e*
+## Versionen & Varianten
+
+| Datei | Beschreibung | Status |
+|-------|--------------|--------|
+| `index.html` | **AKTUELL - GOD MODE EDITION** | ✅ Produktiv |
+| `index_immersive.html` | Erste 3D-Version | 📦 Backup |
+| `index_immersive_v2.html` | Mit Anime.js Effekten | 📦 Backup |
+| `index_immersive_GODMODE.html` | Maximum Edition | 📦 Backup |
+| `index_immersive_MAXIMUM.html` | Weitere Variante | 📦 Backup |
+| `index_KI_DEMO.html` | KI-Prototyp mit TensorFlow.js | 🧪 Experimentell |
+| `index_backup.html` | Ursprüngliche Version | 📦 Backup |
+| `index_new.html` | Zwischenversion | 📦 Backup |
+
+---
+
+*Dokumentation basiert auf Commit 12e3249*  
+*Letzte Aktualisierung: März 2026*
