@@ -865,6 +865,15 @@
         // Vollständige Restauration der Commitment-Strategien
         // 45 Knoten | 6D-Profiling | ObjectionHandler | EventBus
         // ==================================================================
+        
+        // NOTFALL: Loading nach 10 Sekunden auf jeden Fall ausblenden
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.classList.add('hidden');
+                console.log('Loading durch Timeout ausgeblendet');
+            }
+        }, 10000);
 
         // ==================================================================
         // MODUL 1: EventBus (Lose Kopplung)
@@ -3464,8 +3473,16 @@
             }
         };
 
-        // Journey starten
-        Journey.init();
+        // Journey starten mit Fehlerbehandlung
+        try {
+            Journey.init();
+        } catch (error) {
+            console.error('Fehler bei Initialisierung:', error);
+            // Trotzdem Loading ausblenden
+            document.getElementById('loading').classList.add('hidden');
+            // Fehlermeldung anzeigen
+            document.body.innerHTML += '<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(255,0,0,0.8);color:white;padding:20px;border-radius:10px;z-index:10001;">Fehler beim Laden. Bitte Seite neu laden (F5).</div>';
+        }
 
         // ==================================================================
         // Performance Monitoring
