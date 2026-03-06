@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://deine-domain.de/sitemap.xml
+
+# Host
+Host: https://deine-domain.de
+
+# Disallow admin or private areas (if any)
+# Disallow: /admin/
+# Disallow: /private/
+
+# Crawl delay for bots (optional)
+# Crawl-delay: 10

@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISONOMIA | PSYCHOLOGICAL JUDO EDITION</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="ISONOMIA - Erlebe eine immersive Reise zur Entdeckung der Losdemokratie. Eine psychologisch optimierte Erfahrung für politische Teilhabe und demokratische Innovation.">
+    <meta name="keywords" content="Losdemokratie, Sortition, Demokratie, politisches System, Isonomia, politische Teilhabe, Bürgerrat">
+    <meta name="author" content="ISONOMIA Project">
+    <meta name="theme-color" content="#00f5d4">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://deine-domain.de/isonomia">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="ISONOMIA | Losdemokratie Entdecken">
+    <meta property="og:description" content="Eine immersive Reise zur Entdeckung der Losdemokratie. Erlebe eine neue Form der Demokratie.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deine-domain.de/isonomia">
+    <meta property="og:image" content="https://deine-domain.de/icons/og-image.png">
+    <meta property="og:locale" content="de_DE">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ISONOMIA | Losdemokratie Entdecken">
+    <meta name="twitter:description" content="Eine immersive Reise zur Entdeckung der Losdemokratie.">
+    <meta name="twitter:image" content="https://deine-domain.de/icons/og-image.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#00f5d4">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
         
@@ -3581,6 +3615,32 @@
         window.addEventListener('load', () => {
             setTimeout(() => PhysicsWorkerManager.init(), 1000);
         });
+        
+        // ==================================================================
+        // SERVICE WORKER REGISTRATION (PWA)
+        // ==================================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✓ Service Worker registered:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('✓ New version available');
+                                    // Optional: Show update notification
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('✗ Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

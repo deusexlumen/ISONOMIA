@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#050505"/>
+      <stop offset="100%" style="stop-color:#0a0a0a"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00f5d4"/>
+      <stop offset="100%" style="stop-color:#00c4aa"/>
+    </linearGradient>
+    <filter id="glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="15" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  
+  <!-- Grid pattern -->
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#00f5d4" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="200" cy="150" r="300" fill="none" stroke="#00f5d4" stroke-width="1" opacity="0.1"/>
+  <circle cx="1000" cy="500" r="250" fill="none" stroke="#00f5d4" stroke-width="1" opacity="0.1"/>
+  
+  <!-- Main content area -->
+  <g transform="translate(100, 100)">
+    <!-- Logo circle -->
+    <circle cx="100" cy="100" r="80" fill="none" stroke="url(#glow)" stroke-width="4" filter="url(#glow-filter)"/>
+    <text x="100" y="135" font-family="Georgia, serif" font-size="100" font-weight="bold" fill="#00f5d4" text-anchor="middle" filter="url(#glow-filter)">I</text>
+    
+    <!-- Title -->
+    <text x="220" y="90" font-family="Georgia, serif" font-size="72" font-weight="bold" fill="#ffffff">ISONOMIA</text>
+    
+    <!-- Subtitle -->
+    <text x="220" y="140" font-family="system-ui, sans-serif" font-size="28" fill="#00f5d4" letter-spacing="8">LOS DEMOCRATIA</text>
+  </g>
+  
+  <!-- Main tagline -->
+  <text x="600" y="380" font-family="system-ui, sans-serif" font-size="42" fill="#ffffff" text-anchor="middle" font-weight="300">
+    Entdecke eine neue Form der Demokratie
+  </text>
+  
+  <text x="600" y="440" font-family="system-ui, sans-serif" font-size="24" fill="#aaaaaa" text-anchor="middle">
+    Eine immersive Reise zur Losdemokratie
+  </text>
+  
+  <!-- Bottom decoration -->
+  <rect x="450" y="520" width="300" height="2" fill="#00f5d4" opacity="0.5"/>
+  <circle cx="450" cy="521" r="4" fill="#00f5d4"/>
+  <circle cx="750" cy="521" r="4" fill="#00f5d4"/>
+  
+  <!-- Particle effects -->
+  <circle cx="100" cy="550" r="6" fill="#00f5d4" opacity="0.6"/>
+  <circle cx="1100" cy="80" r="8" fill="#00f5d4" opacity="0.4"/>
+  <circle cx="150" cy="100" r="4" fill="#00f5d4" opacity="0.5"/>
+  <circle cx="1050" cy="550" r="5" fill="#00f5d4" opacity="0.6"/>
+</svg>
