@@ -3377,61 +3377,94 @@
             },
 
             animateLoading() {
-                // Verbesserte Loading-Animation mit Elastic-Easing
-                anime({
-                    targets: '#loading-path',
-                    d: [
-                        'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
-                        'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
-                        'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
-                        'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
-                    ],
-                    duration: 2000,
-                    easing: 'spring(1, 80, 12, 0)',
-                    direction: 'alternate',
-                    loop: true
-                });
+                // Prüfe ob anime.js verfügbar ist
+                const hasAnime = typeof anime !== 'undefined' && anime;
                 
-                // Pulsierender Glow-Effekt
-                anime({
-                    targets: '#loading-path',
-                    strokeWidth: [2, 4, 2],
-                    stroke: ['#00f5d4', '#ffd700', '#00f5d4'],
-                    duration: 1500,
-                    loop: true,
-                    easing: 'easeInOutSine'
-                });
-                
-                // Loading-Text Fade
-                anime({
-                    targets: '.loading-text',
-                    opacity: [0.5, 1, 0.5],
-                    letterSpacing: ['0.4em', '0.6em', '0.4em'],
-                    duration: 2000,
-                    loop: true,
-                    easing: 'easeInOutQuad'
-                });
+                if (hasAnime) {
+                    // Verbesserte Loading-Animation mit Elastic-Easing
+                    try {
+                        anime({
+                            targets: '#loading-path',
+                            d: [
+                                'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
+                                'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
+                                'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
+                                'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
+                            ],
+                            duration: 2000,
+                            easing: 'spring(1, 80, 12, 0)',
+                            direction: 'alternate',
+                            loop: true
+                        });
+                        
+                        // Pulsierender Glow-Effekt
+                        anime({
+                            targets: '#loading-path',
+                            strokeWidth: [2, 4, 2],
+                            stroke: ['#00f5d4', '#ffd700', '#00f5d4'],
+                            duration: 1500,
+                            loop: true,
+                            easing: 'easeInOutSine'
+                        });
+                        
+                        // Loading-Text Fade
+                        anime({
+                            targets: '.loading-text',
+                            opacity: [0.5, 1, 0.5],
+                            letterSpacing: ['0.4em', '0.6em', '0.4em'],
+                            duration: 2000,
+                            loop: true,
+                            easing: 'easeInOutQuad'
+                        });
+                    } catch (e) {
+                        console.log('Anime.js animation failed, using CSS fallback');
+                    }
+                } else {
+                    // CSS Fallback für Loading Animation
+                    console.log('Using CSS fallback for loading animation');
+                    const loadingPath = document.getElementById('loading-path');
+                    if (loadingPath) {
+                        loadingPath.style.animation = 'loadingPulse 2s ease-in-out infinite';
+                    }
+                }
 
+                // Loading Screen nach 3 Sekunden ausblenden
                 setTimeout(() => {
-                    // Smooth Exit-Animation
-                    anime({
-                        targets: '#loading',
-                        opacity: [1, 0],
-                        scale: [1, 1.1],
-                        duration: 800,
-                        easing: 'easeOutExpo',
-                        complete: () => {
-                            document.getElementById('loading').classList.add('hidden');
-                            
-                            // Start-Node anzeigen
-                            const startNode = this.currentNodeId || 'start';
-                            this.showNode(startNode);
-                            this.currentNodeId = startNode;
-                            
-                            this.animate();
+                    const loading = document.getElementById('loading');
+                    if (!loading) return;
+                    
+                    if (hasAnime) {
+                        try {
+                            anime({
+                                targets: '#loading',
+                                opacity: [1, 0],
+                                scale: [1, 1.1],
+                                duration: 800,
+                                easing: 'easeOutExpo',
+                                complete: () => this.finishLoading()
+                            });
+                        } catch (e) {
+                            this.finishLoading();
                         }
-                    });
-                }, 2500);
+                    } else {
+                        // CSS Fallback
+                        loading.style.transition = 'opacity 0.8s ease';
+                        loading.style.opacity = '0';
+                        setTimeout(() => this.finishLoading(), 800);
+                    }
+                }, 3000);
+            },
+            
+            finishLoading() {
+                const loading = document.getElementById('loading');
+                if (loading) loading.classList.add('hidden');
+                
+                // Start-Node anzeigen
+                const startNode = this.currentNodeId || 'start';
+                this.showNode(startNode);
+                this.currentNodeId = startNode;
+                
+                this.animate();
             },
 
             animate() {
