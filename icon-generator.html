@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>ISONOMIA Icon Generator</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        h1 { color: #00f5d4; }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .icon-item {
+            background: #111;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .icon-item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .icon-name {
+            font-size: 12px;
+            color: #00f5d4;
+        }
+        button {
+            background: #00f5d4;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00c4aa;
+        }
+        .instructions {
+            background: #111;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #00f5d4;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 ISONOMIA Icon Generator</h1>
+    
+    <div class="instructions">
+        <h3>📋 Anleitung:</h3>
+        <ol>
+            <li>Klicke auf "Icons Vorschau" um alle Größen zu sehen</li>
+            <li>Rechtsklick auf jedes Icon → "Bild speichern unter..."</li>
+            <li>Speichere im <code>/icons</code> Ordner mit dem angezeigten Namen</li>
+        </ol>
+    </div>
+    
+    <button onclick="generateIcons()">🖼️ Icons Vorschau</button>
+    <button onclick="downloadAll()">⬇️ Alle Herunterladen</button>
+    
+    <div id="icon-container" class="icon-grid"></div>
+    
+    <script>
+        const sizes = [16, 32, 72, 96, 128, 144, 152, 180, 192, 384, 512];
+        
+        function generateIcons() {
+            const container = document.getElementById('icon-container');
+            container.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const item = document.createElement('div');
+                item.className = 'icon-item';
+                
+                const img = document.createElement('img');
+                img.src = 'icons/icon.svg';
+                img.width = Math.min(size, 128);
+                img.height = Math.min(size, 128);
+                
+                const name = document.createElement('div');
+                name.className = 'icon-name';
+                name.textContent = getIconName(size);
+                
+                item.appendChild(img);
+                item.appendChild(name);
+                container.appendChild(item);
+            });
+        }
+        
+        function getIconName(size) {
+            if (size === 16) return 'favicon-16x16.png';
+            if (size === 32) return 'favicon-32x32.png';
+            if (size === 180) return 'apple-touch-icon.png';
+            return `icon-${size}x${size}.png`;
+        }
+        
+        function downloadAll() {
+            alert('Bitte speichere jedes Icon einzeln mit Rechtsklick → "Bild speichern unter..."');
+        }
+    </script>
+</body>
+</html>
