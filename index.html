@@ -3,9 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ISONOMIA | GOD MODE EDITION</title>
+    <title>ISONOMIA | PSYCHOLOGICAL JUDO EDITION</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="ISONOMIA - Erlebe eine immersive Reise zur Entdeckung der Losdemokratie. Eine psychologisch optimierte Erfahrung für politische Teilhabe und demokratische Innovation.">
+    <meta name="keywords" content="Losdemokratie, Sortition, Demokratie, politisches System, Isonomia, politische Teilhabe, Bürgerrat">
+    <meta name="author" content="ISONOMIA Project">
+    <meta name="theme-color" content="#00f5d4">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://deine-domain.de/isonomia">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="ISONOMIA | Losdemokratie Entdecken">
+    <meta property="og:description" content="Eine immersive Reise zur Entdeckung der Losdemokratie. Erlebe eine neue Form der Demokratie.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deine-domain.de/isonomia">
+    <meta property="og:image" content="https://deine-domain.de/icons/og-image.png">
+    <meta property="og:locale" content="de_DE">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ISONOMIA | Losdemokratie Entdecken">
+    <meta name="twitter:description" content="Eine immersive Reise zur Entdeckung der Losdemokratie.">
+    <meta name="twitter:image" content="https://deine-domain.de/icons/og-image.png">
+    
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#00f5d4">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Inter:wght@300;400;500&display=swap');
+        
+        /* CSS Custom Properties with Type Safety */
+        @property --glow-intensity {
+            syntax: '<number>';
+            inherits: false;
+            initial-value: 0;
+        }
+
+        @property --station-hue {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 170deg;
+        }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -52,50 +99,123 @@
             max-width: 800px;
             padding: 2rem;
             transform-style: preserve-3d;
-        }
-
-        .station-text.active {
-            opacity: 1;
-        }
-
-        .station-title {
-            font-size: clamp(3rem, 7vw, 6rem);
-            margin-bottom: 1.5rem;
-            letter-spacing: 0.1em;
-            line-height: 1;
-            overflow: hidden;
-            text-shadow: 
-                0 0 60px currentColor,
-                0 0 120px currentColor,
-                0 0 180px currentColor;
-            animation: textPulse 4s ease-in-out infinite;
+            
+            &.active {
+                opacity: 1;
+            }
+            
+            & .station-title {
+                font-size: clamp(2.5rem, 6vw, 5rem);
+                margin-bottom: 1.5rem;
+                letter-spacing: 0.08em;
+                line-height: 1.1;
+                overflow: hidden;
+                text-shadow: 
+                    0 0 40px currentColor,
+                    0 0 80px currentColor,
+                    0 0 120px currentColor;
+                animation: textPulse 4s ease-in-out infinite;
+                
+                & .char {
+                    display: inline-block;
+                    opacity: 0;
+                    transform: translateY(100px) rotateX(-90deg);
+                    transition: all 0.3s ease;
+                    
+                    &:hover {
+                        transform: scale(1.3) rotateY(15deg);
+                        filter: brightness(1.5);
+                    }
+                }
+            }
+            
+            & .station-subtitle {
+                font-family: 'Inter', sans-serif;
+                font-size: 1.2rem;
+                line-height: 1.8;
+                color: rgba(255, 255, 255, 0.9);
+                opacity: 0;
+                transform: translateY(30px);
+                text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+                margin-bottom: 2rem;
+            }
         }
 
         @keyframes textPulse {
-            0%, 100% { text-shadow: 0 0 60px currentColor, 0 0 120px currentColor; }
-            50% { text-shadow: 0 0 80px currentColor, 0 0 160px currentColor, 0 0 200px currentColor; }
+            0%, 100% { text-shadow: 0 0 40px currentColor, 0 0 80px currentColor; }
+            50% { text-shadow: 0 0 60px currentColor, 0 0 120px currentColor, 0 0 160px currentColor; }
         }
 
-        .station-title .char {
-            display: inline-block;
+        /* Commitment-Bar (NEU) */
+        #commitment-panel {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 25;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,245,212,0.3);
+            border-radius: 30px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             opacity: 0;
-            transform: translateY(100px) rotateX(-90deg);
+            transition: opacity 0.5s ease;
+        }
+
+        #commitment-panel.visible {
+            opacity: 1;
+        }
+
+        .commitment-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .commitment-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .commitment-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00f5d4, #ffd700);
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+        }
+
+        .commitment-count {
+            font-size: 0.9rem;
+            color: #00f5d4;
+            font-weight: 600;
+            min-width: 60px;
+        }
+
+        .commitment-dots {
+            display: flex;
+            gap: 5px;
+        }
+
+        .commitment-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
             transition: all 0.3s ease;
         }
 
-        .station-title .char:hover {
-            transform: scale(1.3) rotateY(15deg);
-            filter: brightness(1.5);
-        }
-
-        .station-subtitle {
-            font-family: 'Inter', sans-serif;
-            font-size: 1.3rem;
-            line-height: 2;
-            color: rgba(255, 255, 255, 0.9);
-            opacity: 0;
-            transform: translateY(30px);
-            text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+        .commitment-dot.active {
+            background: #00f5d4;
+            box-shadow: 0 0 10px #00f5d4;
         }
 
         /* Dynamic AI Text Highlight */
@@ -111,84 +231,88 @@
             50% { border-left-color: #ffd700; }
         }
 
-        /* Organic Portals */
+        /* Portal Options */
         .portal-container {
             position: absolute;
             bottom: 10%;
             display: flex;
-            gap: 4rem;
+            gap: 2rem;
             opacity: 0;
             pointer-events: auto;
             transform-style: preserve-3d;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 900px;
         }
 
         .portal-wrapper {
             position: relative;
-            width: 220px;
-            height: 220px;
+            min-width: 180px;
+            padding: 20px 30px;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            transform-style: preserve-3d;
-        }
-
-        .portal-wrapper:hover {
-            transform: translateZ(50px) scale(1.1);
-        }
-
-        .portal-svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-            filter: drop-shadow(0 0 30px currentColor);
-        }
-
-        .portal-shape {
-            fill: rgba(0, 245, 212, 0.15);
-            stroke: currentColor;
-            stroke-width: 2;
             transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            
+            &:hover {
+                transform: translateZ(30px) scale(1.05);
+                border-color: currentColor;
+                box-shadow: 0 0 40px currentColor;
+            }
+            
+            &.commitment-yes {
+                border-color: #00f5d4;
+                background: rgba(0, 245, 212, 0.1);
+            }
+            
+            &.commitment-no {
+                border-color: #ff6b9d;
+                background: rgba(255, 107, 157, 0.1);
+            }
+            
+            &[data-commitment="yes"] .portal-commitment-indicator {
+                opacity: 1;
+                transform: scale(1);
+            }
+            
+            & .portal-label {
+                font-size: 0.85rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: #fff;
+                text-align: center;
+                pointer-events: none;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            }
+            
+            & .portal-commitment-indicator {
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background: #00f5d4;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                opacity: 0;
+                transform: scale(0);
+                transition: all 0.3s ease;
+            }
         }
 
-        .portal-glow {
-            position: absolute;
-            inset: -30px;
-            background: radial-gradient(circle, currentColor 0%, transparent 60%);
-            opacity: 0;
-            filter: blur(30px);
-            pointer-events: none;
-            animation: portalPulse 3s ease-in-out infinite;
-        }
-
-        @keyframes portalPulse {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.1); }
-        }
-
-        .portal-wrapper:hover .portal-glow {
-            opacity: 0.8;
-        }
-
-        .portal-label {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.85rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: #fff;
-            text-align: center;
-            pointer-events: none;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-        }
-
-        /* Profile Display (AI Generated) */
+        /* Profile Display (Enhanced) */
         #profile-panel {
             position: fixed;
             top: 100px;
             right: 30px;
-            width: 280px;
-            background: rgba(0,0,0,0.7);
+            width: 300px;
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(0,245,212,0.3);
             border-radius: 15px;
@@ -217,7 +341,7 @@
             justify-content: space-between;
             margin: 10px 0;
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .profile-bar {
@@ -242,19 +366,65 @@
             background: rgba(0,245,212,0.1);
             border-radius: 8px;
             text-align: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #00f5d4;
             border: 1px solid rgba(0,245,212,0.3);
+        }
+
+        .archetype-display small {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+        }
+
+        /* Objection Handler UI */
+        #objection-panel {
+            position: fixed;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            max-width: 600px;
+            background: rgba(255, 107, 157, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 157, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            z-index: 25;
+            opacity: 0;
+            transition: all 0.5s ease;
+            pointer-events: auto;
+        }
+
+        #objection-panel.visible {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #objection-panel h4 {
+            color: #ff6b9d;
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #objection-panel p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.9);
         }
 
         /* Collectibles */
         #collectibles-container {
             position: fixed;
-            top: 30px;
-            right: 30px;
+            top: 100px;
+            left: 30px;
             z-index: 20;
             display: flex;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .collectible {
@@ -270,14 +440,14 @@
             opacity: 0.3;
             transition: all 0.5s ease;
             cursor: pointer;
-        }
-
-        .collectible.collected {
-            opacity: 1;
-            background: rgba(0, 245, 212, 0.2);
-            border-color: #00f5d4;
-            box-shadow: 0 0 30px rgba(0, 245, 212, 0.6);
-            animation: collectibleFloat 3s ease-in-out infinite;
+            
+            &.collected {
+                opacity: 1;
+                background: rgba(0, 245, 212, 0.2);
+                border-color: #00f5d4;
+                box-shadow: 0 0 30px rgba(0, 245, 212, 0.6);
+                animation: collectibleFloat 3s ease-in-out infinite;
+            }
         }
 
         @keyframes collectibleFloat {
@@ -289,7 +459,7 @@
         #audio-toggle {
             position: fixed;
             top: 30px;
-            left: 30px;
+            right: 30px;
             z-index: 20;
             width: 50px;
             height: 50px;
@@ -398,23 +568,220 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
+
+        /* Micro-Commitment Highlight */
+        .commitment-highlight {
+            animation: commitmentPulse 1s ease-in-out;
+        }
+
+        @keyframes commitmentPulse {
+            0%, 100% { box-shadow: 0 0 20px #00f5d4; }
+            50% { box-shadow: 0 0 60px #00f5d4, 0 0 100px #00f5d4; }
+        }
+
+        /* Honesty Prompt Style */
+        .honesty-prompt {
+            border: 2px solid #ffd700 !important;
+            animation: honestyGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes honestyGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #commitment-panel {
+                left: 10px;
+                right: 10px;
+                transform: none;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .commitment-bar {
+                width: 150px;
+            }
+            
+            #profile-panel {
+                width: 250px;
+                right: 10px;
+            }
+            
+            .portal-container {
+                gap: 1rem;
+                bottom: 5%;
+            }
+            
+            .portal-wrapper {
+                min-width: 140px;
+                padding: 15px 20px;
+            }
+        }
+
+        /* Skip Link for Keyboard Navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #000;
+            color: #fff;
+            padding: 8px 16px;
+            text-decoration: none;
+            z-index: 10000;
+            border: 2px solid #00f5d4;
+            transition: top 0.3s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Focus Indicators (WCAG 2.2) */
+        *:focus-visible {
+            outline: 3px solid #00f5d4;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        /* Visually Hidden Class */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Reduced Motion Support */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Target Size Minimum (WCAG 2.2) */
+        button, .portal-wrapper, #audio-toggle, .collectible {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* Container Queries 2025 */
+        #ui-layer {
+            container-type: inline-size;
+            container-name: ui;
+        }
+
+        @container ui (max-width: 600px) {
+            .station-text {
+                padding: 1rem;
+                max-width: 95vw;
+                
+                & .station-title {
+                    font-size: clamp(1.8rem, 8vw, 3rem);
+                }
+                
+                & .station-subtitle {
+                    font-size: 1rem;
+                }
+            }
+            
+            .portal-container {
+                flex-direction: column;
+                gap: 1rem;
+                bottom: 5%;
+            }
+            
+            .portal-wrapper {
+                min-width: 200px;
+                padding: 15px 25px;
+            }
+        }
+
+        @container ui (max-height: 500px) {
+            .station-text {
+                padding: 1rem;
+                
+                & .station-subtitle {
+                    margin-bottom: 1rem;
+                    line-height: 1.5;
+                }
+            }
+            
+            .portal-container {
+                bottom: 2%;
+            }
+        }
+
+        /* Scroll-Driven Animations (Native CSS 2025) */
+        @supports (animation-timeline: scroll()) {
+            .station-title {
+                animation: fadeInUp linear;
+                animation-timeline: view();
+                animation-range: entry 0% cover 40%;
+            }
+            
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(50px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        }
+
+        /* Fallback */
+        @supports not (animation-timeline: scroll()) {
+            .station-title {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
+    <a href="#ui-layer" class="skip-link">Zum Hauptinhalt springen</a>
     <!-- Loading Screen -->
-    <div id="loading">
+    <div id="loading" role="status" aria-live="polite" aria-label="Ladebildschirm">
         <svg class="loading-blob" viewBox="0 0 100 100">
             <path id="loading-path" fill="none" stroke="#00f5d4" stroke-width="2"
                   d="M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10"/>
         </svg>
-        <div class="loading-text">Initialisiere God Mode</div>
+        <div class="loading-text">Initialisiere Psychological Judo</div>
     </div>
 
     <!-- Audio Toggle -->
-    <button id="audio-toggle" onclick="Journey.toggleAudio()">🔊</button>
+    <button id="audio-toggle" onclick="Journey.toggleAudio()" aria-label="Audio ein- oder ausschalten" aria-pressed="false" type="button"><span aria-hidden="true">🔊</span><span class="visually-hidden">Audio Status</span></button>
+
+    <!-- Commitment Panel (NEU) -->
+    <div id="commitment-panel" role="region" aria-label="Commitment Fortschritt">
+        <span class="commitment-label">Commitment</span>
+        <div class="commitment-bar">
+            <div class="commitment-fill" id="commitment-fill"></div>
+        </div>
+        <span class="commitment-count" id="commitment-count">0/7</span>
+        <div class="commitment-dots" id="commitment-dots">
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+            <div class="commitment-dot"></div>
+        </div>
+    </div>
 
     <!-- Collectibles -->
-    <div id="collectibles-container">
+    <div id="collectibles-container" role="region" aria-label="Gesammelte Weisheiten">
         <div class="collectible" data-id="wisdom" title="Weisheit">📜</div>
         <div class="collectible" data-id="courage" title="Mut">🔥</div>
         <div class="collectible" data-id="hope" title="Hoffnung">✨</div>
@@ -422,8 +789,24 @@
     </div>
 
     <!-- AI Profile Panel -->
-    <div id="profile-panel">
-        <h3>Dein Profil</h3>
+    <div id="profile-panel" role="complementary" aria-label="Psychologisches Profil">
+        <h3>Dein Psychologisches Profil</h3>
+        
+        <div class="profile-stat">
+            <span>Engagement</span>
+            <span id="stat-engagement">-</span>
+        </div>
+        
+        <div class="profile-stat">
+            <span>Skepsis</span>
+            <span id="stat-skepticism">-</span>
+        </div>
+        
+        <div class="profile-stat">
+            <span>Werte-Anker</span>
+            <span id="stat-value">-</span>
+        </div>
+        
         <div class="profile-stat">
             <span>Rebellion</span>
             <span id="stat-rebellion">0%</span>
@@ -443,8 +826,15 @@
         <div class="profile-bar"><div class="profile-bar-fill" id="bar-strategy"></div></div>
         
         <div class="archetype-display" id="archetype">
-            Wähler
+            Analysiere...
+            <small>Basierend auf deinen Entscheidungen</small>
         </div>
+    </div>
+
+    <!-- Objection Panel (NEU) -->
+    <div id="objection-panel" role="alert" aria-live="polite" aria-label="Einwand Information">
+        <h4>💭 Einwand erkannt</h4>
+        <p id="objection-text">...</p>
     </div>
 
     <!-- Post-Processing Overlays -->
@@ -453,13 +843,13 @@
     <canvas id="chromatic-canvas"></canvas>
 
     <!-- 3D Canvas -->
-    <div id="canvas-container"></div>
+    <div id="canvas-container" role="img" aria-label="3D Partikel Visualisierung"></div>
 
     <!-- UI Layer -->
-    <div id="ui-layer"></div>
+    <main id="ui-layer" role="main" tabindex="-1"></main>
 
     <!-- Progress -->
-    <div id="progress-container">
+    <div id="progress-container" role="region" aria-label="Reise Fortschritt">
         <div id="progress-ring">
             <div id="progress-fill"></div>
         </div>
@@ -471,15 +861,1735 @@
 
     <script>
         // ==================================================================
-        // ISONOMIA GOD MODE EDITION
-        // Post-Processing + AI-Generated Content + Maximum Everything
+        // ISONOMIA PSYCHOLOGICAL JUDO EDITION
+        // Vollständige Restauration der Commitment-Strategien
+        // 45 Knoten | 6D-Profiling | ObjectionHandler | EventBus
         // ==================================================================
 
+        // ==================================================================
+        // MODUL 1: EventBus (Lose Kopplung)
+        // ==================================================================
+        const EventBus = {
+            events: {},
+            
+            on(event, callback) {
+                if (!this.events[event]) {
+                    this.events[event] = [];
+                }
+                this.events[event].push(callback);
+            },
+            
+            off(event, callback) {
+                if (!this.events[event]) return;
+                this.events[event] = this.events[event].filter(cb => cb !== callback);
+            },
+            
+            emit(event, data) {
+                if (!this.events[event]) return;
+                this.events[event].forEach(callback => {
+                    try {
+                        callback(data);
+                    } catch (e) {
+                        console.error(`EventBus Error in ${event}:`, e);
+                    }
+                });
+            }
+        };
+
+        // ==================================================================
+        // Accessibility Module
+        // ==================================================================
+        const A11y = {
+            announcer: null,
+            
+            init() {
+                this.announcer = document.createElement('div');
+                this.announcer.setAttribute('role', 'status');
+                this.announcer.setAttribute('aria-live', 'polite');
+                this.announcer.setAttribute('aria-atomic', 'true');
+                this.announcer.className = 'visually-hidden';
+                document.body.appendChild(this.announcer);
+                
+                this.setupKeyboardNav();
+            },
+            
+            announce(message, priority = 'polite') {
+                this.announcer.setAttribute('aria-live', priority);
+                this.announcer.textContent = message;
+                setTimeout(() => {
+                    this.announcer.textContent = '';
+                }, 1000);
+            },
+            
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        this.handleEscape();
+                    }
+                });
+            },
+            
+            handleEscape() {
+                // Handle escape key for modals/overlays
+                const panel = document.querySelector('#objection-panel.visible');
+                if (panel) {
+                    panel.classList.remove('visible');
+                }
+            },
+            
+            announceStationChange(stationName) {
+                this.announce(`Neue Station erreicht: ${stationName}`);
+            }
+        };
+
+        // Initialize A11y
+        A11y.init();
+
+        // ==================================================================
+        // MODUL 2: UserProfile (6 Dimensionen)
+        // ==================================================================
+        const UserProfile = {
+            // Dimension 1: Politisches Interesse
+            engagementLevel: null, // 'engaged' | 'casual' | 'avoidant'
+            
+            // Dimension 2: Skepsis-Ausrichtung
+            skepticismType: null, // 'system' | 'trust' | 'agency' | null
+            
+            // Dimension 3: Werteorientierung
+            valueAnchor: null, // 'patriot' | 'pragmatist' | 'idealist' | 'skeptic'
+            
+            // Dimension 4: Commitment-History
+            commitments: [],
+            commitmentScore: 0,
+            
+            // Dimension 5: Einwände (Objektionen)
+            raisedObjections: [],
+            resolvedObjections: [],
+            
+            // Dimension 6: Interaktions-Muster
+            pathTaken: [],
+            backtrackCount: 0,
+            nodeVisitTimes: {},
+            currentNodeStartTime: null,
+            
+            // Legacy Stats (für 3D-Visualisierung)
+            rebellion: 0,
+            empathy: 0,
+            strategy: 0,
+            
+            // Methoden
+            set(key, value) {
+                this[key] = value;
+                this._persist();
+                EventBus.emit('profile:updated', { key, value });
+            },
+            
+            addCommitment(nodeId, agreed, context = '') {
+                this.commitments.push({
+                    node: nodeId,
+                    agreed: agreed,
+                    context: context,
+                    timestamp: Date.now()
+                });
+                
+                // Score berechnen (nur "Ja" zählt voll)
+                this.commitmentScore = Math.min(100, 
+                    this.commitments.filter(c => c.agreed).length * 15
+                );
+                
+                this._persist();
+                EventBus.emit('commitment:added', { 
+                    nodeId, 
+                    agreed, 
+                    score: this.commitmentScore,
+                    count: this.commitments.filter(c => c.agreed).length
+                });
+            },
+            
+            recordObjection(objectionType) {
+                if (!this.raisedObjections.includes(objectionType)) {
+                    this.raisedObjections.push(objectionType);
+                    this._persist();
+                    EventBus.emit('objection:raised', { objectionType });
+                }
+            },
+            
+            resolveObjection(objectionType) {
+                if (!this.resolvedObjections.includes(objectionType)) {
+                    this.resolvedObjections.push(objectionType);
+                    this._persist();
+                    EventBus.emit('objection:resolved', { objectionType });
+                }
+            },
+            
+            isObjectionResolved(objectionType) {
+                return this.resolvedObjections.includes(objectionType);
+            },
+            
+            recordNodeVisit(nodeId) {
+                const now = Date.now();
+                if (this.currentNodeStartTime && this.pathTaken.length > 0) {
+                    const lastNode = this.pathTaken[this.pathTaken.length - 1];
+                    this.nodeVisitTimes[lastNode] = now - this.currentNodeStartTime;
+                }
+                this.pathTaken.push(nodeId);
+                this.currentNodeStartTime = now;
+                this._persist();
+            },
+            
+            updateLegacyStats(stats) {
+                if (stats.rebellion !== undefined) this.rebellion = Math.min(100, this.rebellion + stats.rebellion);
+                if (stats.empathy !== undefined) this.empathy = Math.min(100, this.empathy + stats.empathy);
+                if (stats.strategy !== undefined) this.strategy = Math.min(100, this.strategy + stats.strategy);
+                this._persist();
+                EventBus.emit('stats:updated', { rebellion: this.rebellion, empathy: this.empathy, strategy: this.strategy });
+            },
+            
+            getSummary() {
+                const yesCount = this.commitments.filter(c => c.agreed).length;
+                const noCount = this.commitments.filter(c => !c.agreed).length;
+                
+                return {
+                    engagementLevel: this.engagementLevel,
+                    skepticismType: this.skepticismType,
+                    valueAnchor: this.valueAnchor,
+                    commitmentScore: this.commitmentScore,
+                    commitmentsYes: yesCount,
+                    commitmentsNo: noCount,
+                    raisedObjections: this.raisedObjections,
+                    pathLength: this.pathTaken.length,
+                    rebellion: this.rebellion,
+                    empathy: this.empathy,
+                    strategy: this.strategy
+                };
+            },
+            
+            determineArchetype() {
+                // Archetype basierend auf Profil bestimmen
+                if (this.commitmentScore >= 60 && this.empathy >= 50) {
+                    return { name: "Der Wächter", desc: "Du schützt die Schwachen durch aktive Teilhabe" };
+                }
+                if (this.commitmentScore >= 60 && this.rebellion >= 50) {
+                    return { name: "Der Revolutionär", desc: "Du zerstörst das Alte und baust das Neue" };
+                }
+                if (this.commitmentScore >= 60 && this.strategy >= 50) {
+                    return { name: "Der Architekt", desc: "Du baust das Neue mit strategischer Präzision" };
+                }
+                if (this.rebellion >= 40 && this.empathy >= 40) {
+                    return { name: "Der Katalysator", desc: "Du vereinst Gegensätze und schaffst Bewegung" };
+                }
+                if (this.commitmentScore >= 40) {
+                    return { name: "Der Transformator", desc: "Du bist bereit für Veränderung" };
+                }
+                return { name: "Der Voyager", desc: "Du erkundest alle Pfade auf deine Weise" };
+            },
+            
+            reset() {
+                this.engagementLevel = null;
+                this.skepticismType = null;
+                this.valueAnchor = null;
+                this.commitments = [];
+                this.commitmentScore = 0;
+                this.raisedObjections = [];
+                this.resolvedObjections = [];
+                this.pathTaken = [];
+                this.backtrackCount = 0;
+                this.nodeVisitTimes = {};
+                this.rebellion = 0;
+                this.empathy = 0;
+                this.strategy = 0;
+                this._persist();
+            },
+            
+            load() {
+                try {
+                    const saved = sessionStorage.getItem('isonomia_profile_v2');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        Object.assign(this, data);
+                    }
+                } catch (e) {
+                    console.warn('Konnte Profil nicht laden:', e);
+                }
+            },
+            
+            _persist() {
+                try {
+                    sessionStorage.setItem('isonomia_profile_v2', JSON.stringify({
+                        engagementLevel: this.engagementLevel,
+                        skepticismType: this.skepticismType,
+                        valueAnchor: this.valueAnchor,
+                        commitments: this.commitments,
+                        commitmentScore: this.commitmentScore,
+                        raisedObjections: this.raisedObjections,
+                        resolvedObjections: this.resolvedObjections,
+                        pathTaken: this.pathTaken,
+                        backtrackCount: this.backtrackCount,
+                        rebellion: this.rebellion,
+                        empathy: this.empathy,
+                        strategy: this.strategy
+                    }));
+                } catch (e) {
+                    console.warn('Konnte Profil nicht speichern:', e);
+                }
+            }
+        };
+
+        // ==================================================================
+        // MODUL 3: ObjectionHandler (5 Einwandtypen)
+        // ==================================================================
+        const ObjectionHandler = {
+            database: {
+                practicality: {
+                    patterns: [/funktioniert nicht/i, /realität/i, /praxis/i, /umsetzbar/i, /realistisch/i],
+                    priority: 1,
+                    responses: {
+                        pragmatist: "In Athen hat es 200 Jahre funktioniert. Was ist pragmatischer als bewährte Lösungen?",
+                        patriot: "Deutschland hat Systemwechsel gemeistert. 1989. 1949. Wir können das.",
+                        idealist: "Jede große Veränderung begann als 'unmöglich'. Bis jemand sie wagte.",
+                        skeptic: "Richtig. Deshalb brauchen wir einen Testzeitraum. Ein Experiment."
+                    }
+                },
+                qualification: {
+                    patterns: [/qualifikation/i, /kompetenz/i, /wissen/i, /fachwissen/i, /experten/i, /akademiker/i],
+                    priority: 2,
+                    responses: {
+                        pragmatist: "Wäre Deutschland 1949 qualifizierter mit Akademikern? Oder mit Weisheit?",
+                        patriot: "Die Weimarer Republik hatte Experten. Die BRD hatte Visionäre. Was hat funktioniert?",
+                        idealist: "Jeder Mensch hat ein Recht auf Mitsprache. Das ist die höchste Qualifikation.",
+                        skeptic: "Zeig mir die Studie, die sagt, dass Akademiker bessere Gesetze schreiben."
+                    }
+                },
+                corruption: {
+                    patterns: [/korruption/i, /bestechung/i, /geld/i, /käuflich/i, /lobby/i],
+                    priority: 3,
+                    responses: {
+                        pragmatist: "Ein Jahr Amtszeit. Dann wieder Bürger. Weniger Zeit für Korruption als heute.",
+                        patriot: "Ein echter Deutscher dient seinem Volk, nicht seinem Bankkonto.",
+                        idealist: "Wenn alle regieren, kann niemand alle kaufen.",
+                        skeptic: "Korruption braucht Zeit und Kontinuität. Losentscheide haben beides nicht."
+                    }
+                },
+                time: {
+                    patterns: [/zeit/i, /aufwand/i, /kompliziert/i, /aufwendig/i, /stunden/i],
+                    priority: 4,
+                    responses: {
+                        pragmatist: "Ein Jahr statt vier. Keine Wahlkämpfe. Keine Koalitionsverhandlungen.",
+                        idealist: "Freiheit braucht Zeit. Aber Sklaverei kostet mehr.",
+                        skeptic: "Was kostet uns das aktuelle System pro Jahr? In Milliarden?"
+                    }
+                },
+                extremism: {
+                    patterns: [/extrem/i, /radikal/i, /gefährlich/i, /chaos/i, /anarchie/i],
+                    priority: 5,
+                    responses: {
+                        pragmatist: "Das System das uns 200 Jahre trug, ist nicht radikal. Es ist bewährt.",
+                        patriot: "Athen war die Wiege der Zivilisation. Nicht der Chaos.",
+                        idealist: "Echte Demokratie ist das Gegenteil von Extremismus. Sie ist Balance.",
+                        skeptic: "Was ist extremer: Losentscheide oder 87% Akademiker in Parlamenten?"
+                    }
+                }
+            },
+            
+            detectObjection(text) {
+                if (!text) return null;
+                const lowerText = text.toLowerCase();
+                
+                for (const [type, data] of Object.entries(this.database)) {
+                    for (const pattern of data.patterns) {
+                        if (pattern.test(lowerText)) {
+                            return type;
+                        }
+                    }
+                }
+                return null;
+            },
+            
+            getResponse(objectionType, userProfile) {
+                const entry = this.database[objectionType];
+                if (!entry) return null;
+                
+                // Persona-basierte Antwort
+                const persona = userProfile.valueAnchor || 'pragmatist';
+                return entry.responses[persona] || entry.responses.pragmatist;
+            },
+            
+            shouldHandleObjection(currentNodeId, userProfile) {
+                // Prüfen, ob Einwand bereits behandelt wurde
+                return userProfile.raisedObjections.length > 0 && 
+                       userProfile.resolvedObjections.length < userProfile.raisedObjections.length;
+            },
+            
+            getPendingObjections(userProfile) {
+                return userProfile.raisedObjections.filter(
+                    o => !userProfile.resolvedObjections.includes(o)
+                );
+            }
+        };
+
+        // ==================================================================
+        // MODUL 4: Storage (Persistenz)
+        // ==================================================================
+        const Storage = {
+            SESSION_KEY: 'isonomia_session_v2',
+            
+            save(currentStep, history) {
+                try {
+                    const session = {
+                        currentStep,
+                        history,
+                        timestamp: Date.now(),
+                        profile: UserProfile.getSummary()
+                    };
+                    localStorage.setItem(this.SESSION_KEY, JSON.stringify(session));
+                } catch (e) {
+                    console.warn('Konnte Session nicht speichern:', e);
+                }
+            },
+            
+            load() {
+                try {
+                    const saved = localStorage.getItem(this.SESSION_KEY);
+                    if (saved) {
+                        const session = JSON.parse(saved);
+                        // Prüfen ob Session noch gültig (24 Stunden)
+                        if (Date.now() - session.timestamp < 24 * 60 * 60 * 1000) {
+                            return session;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Konnte Session nicht laden:', e);
+                }
+                return null;
+            },
+            
+            clear() {
+                localStorage.removeItem(this.SESSION_KEY);
+                sessionStorage.removeItem('isonomia_profile_v2');
+            },
+            
+            hasSession() {
+                return !!this.load();
+            }
+        };
+
+        // Profil beim Laden initialisieren
+        UserProfile.load();
+
+
+        // ==================================================================
+        // MODUL 5: NarrativeData (45 Knoten mit Commitment-Strategien)
+        // ==================================================================
+        const narrativeData = {
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 1: PROFILING (Knoten 1-8)
+            // Foot-in-door, Curiosity Gap, Validation Reframing
+            // ═══════════════════════════════════════════════════════════════
+            
+            "start": {
+                text: "Wo drückt der Schuh?",
+                subtext: "Ein Experiment in Demokratie. Kein Spiel. Keine Überzeugung. Nur Logik.",
+                visual: "breathe",
+                phase: "profiling",
+                judo: "curiosity_gap",
+                options: [
+                    { 
+                        label: "Ich bin frustriert vom System", 
+                        next: "profiling_skeptic",
+                        profileSet: { engagementLevel: "engaged", skepticismType: "system" },
+                        statBoost: { rebellion: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Neugierig - was ist das?", 
+                        next: "profiling_curiosity",
+                        profileSet: { engagementLevel: "casual" },
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Skeptisch - überzeuge mich", 
+                        next: "profiling_skeptic_trust",
+                        profileSet: { engagementLevel: "engaged", skepticismType: "trust" },
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_curiosity": {
+                text: "Gewaltfreie Kommunikation trifft Politik",
+                subtext: "Was wäre, wenn Demokratie nicht bedeuten müsste, andere zu überzeugen?",
+                visual: "breathe",
+                phase: "profiling",
+                judo: "foot_in_door",
+                options: [
+                    { 
+                        label: "Klingt interessant", 
+                        next: "profiling_value_casual",
+                        profileSet: { valueAnchor: "pragmatist" },
+                        statBoost: { strategy: 10 },
+                        commitment: { type: "micro", question: "interested", weight: 0.5 }
+                    },
+                    { 
+                        label: "Ich will Systemwechsel", 
+                        next: "profiling_value_engaged",
+                        profileSet: { valueAnchor: "idealist" },
+                        statBoost: { rebellion: 20 },
+                        commitment: { type: "micro", question: "change", weight: 1 }
+                    },
+                    { 
+                        label: "Zeig mir die Fakten", 
+                        next: "profiling_skeptic_system",
+                        profileSet: { valueAnchor: "skeptic" },
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_skeptic": {
+                text: "Frust ist legitim.",
+                subtext: "Das System ist nicht zufällig kaputt. Es ist so gebaut. Aber Skepsis ist Stärke, nicht Schwäche.",
+                visual: "tremble",
+                phase: "profiling",
+                judo: "validation_reframing",
+                options: [
+                    { 
+                        label: "Stimmt - ich traue nichts", 
+                        next: "profiling_skeptic_trust",
+                        profileSet: { skepticismType: "trust" },
+                        statBoost: { rebellion: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Ich will wirksam sein", 
+                        next: "profiling_value_engaged",
+                        profileSet: { skepticismType: "agency", valueAnchor: "pragmatist" },
+                        statBoost: { empathy: 10, strategy: 10 },
+                        commitment: { type: "attitudinal", question: "effectiveness", weight: 0.8 }
+                    },
+                    { 
+                        label: "Geht mir nicht tief genug", 
+                        next: "balance_frustration_validate",
+                        profileSet: { engagementLevel: "engaged", valueAnchor: "idealist" },
+                        statBoost: { rebellion: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_skeptic_trust": {
+                text: "Misstrauen ist gesund.",
+                subtext: "Wer alles glaubt, fällt auf alles herein. Lass mich deine Skepsis respektieren.",
+                visual: "breathe",
+                phase: "profiling",
+                judo: "validation",
+                options: [
+                    { 
+                        label: "Einverstanden", 
+                        next: "hook",
+                        profileSet: { valueAnchor: "skeptic" },
+                        statBoost: { strategy: 10 },
+                        commitment: { type: "micro", question: "respect", weight: 0.5 }
+                    },
+                    { 
+                        label: "Was ist Losdemokratie?", 
+                        next: "intro_isonomia_logic",
+                        profileSet: { engagementLevel: "casual" },
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Zeig mir Beweise", 
+                        next: "balance_progress_challenge",
+                        profileSet: { valueAnchor: "skeptic" },
+                        statBoost: { rebellion: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_value_engaged": {
+                text: "Engagement ist Kraft.",
+                subtext: "Du bist nicht apathisch. Du bist aktiv. Das ist der Unterschied zwischen Zuschauer und Spieler.",
+                visual: "breathe",
+                phase: "profiling",
+                judo: "commitment_consistency",
+                options: [
+                    { 
+                        label: "Ich will handeln", 
+                        next: "hook",
+                        profileSet: { valueAnchor: "pragmatist" },
+                        statBoost: { rebellion: 15, empathy: 10 },
+                        commitment: { type: "behavioral", question: "action", weight: 1 }
+                    },
+                    { 
+                        label: "Aber WAHLen bringen nichts", 
+                        next: "path_parties_start",
+                        profileSet: { valueAnchor: "idealist" },
+                        statBoost: { rebellion: 20 },
+                        commitment: { type: "belief", question: "elections_ineffective", weight: 1 }
+                    },
+                    { 
+                        label: "Erstmal verstehen", 
+                        next: "balance_progress_challenge",
+                        profileSet: { valueAnchor: "skeptic" },
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_value_casual": {
+                text: "Kein Druck.",
+                subtext: "Du musst nichts. Schau dir das Experiment an. Wenn es dich nicht interessiert, gehst du.",
+                visual: "breathe",
+                phase: "profiling",
+                judo: "possibility_opening",
+                options: [
+                    { 
+                        label: "Okay, erzähl", 
+                        next: "balance_progress_challenge",
+                        profileSet: { engagementLevel: "casual" },
+                        statBoost: { strategy: 10 },
+                        commitment: { type: "micro", question: "listen", weight: 0.3 }
+                    },
+                    { 
+                        label: "Zu theoretisch für mich", 
+                        next: "profiling_value_avoidant",
+                        profileSet: { engagementLevel: "avoidant" },
+                        statBoost: { empathy: 5 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_value_avoidant": {
+                text: "Theorie langweilt. Praxis interessiert.",
+                subtext: "Fakten: 87% Akademiker im Bundestag. 20% in der Bevölkerung. Ist das repräsentativ?",
+                visual: "tremble",
+                phase: "profiling",
+                judo: "data_shock",
+                options: [
+                    { 
+                        label: "Nein, das ist nicht fair", 
+                        next: "hook",
+                        profileSet: { valueAnchor: "patriot" },
+                        statBoost: { empathy: 15 },
+                        commitment: { type: "value", question: "fairness", weight: 1 }
+                    },
+                    { 
+                        label: "Quelle?", 
+                        next: "profiling_skeptic_system",
+                        profileSet: { valueAnchor: "skeptic" },
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Ist mir egal", 
+                        next: "exit_graceful",
+                        profileSet: { engagementLevel: "avoidant" },
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "profiling_skeptic_system": {
+                text: "Das System ist das Problem.",
+                subtext: "Nicht die Menschen. Die Struktur. Wenn du ein faires Spiel willst, musst du die Regeln ändern.",
+                visual: "chaos",
+                phase: "profiling",
+                judo: "paradox_interest",
+                options: [
+                    { 
+                        label: "Stimmt - das System spaltet", 
+                        next: "path_parties_start",
+                        profileSet: { valueAnchor: "idealist" },
+                        statBoost: { rebellion: 15 },
+                        commitment: { type: "attitudinal", question: "system_divides", weight: 1 }
+                    },
+                    { 
+                        label: "Wie ändern wir Regeln?", 
+                        next: "balance_progress_challenge",
+                        profileSet: { valueAnchor: "pragmatist" },
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 2: BALANCE-STÖRUNG (Knoten 9-20)
+            // Cognitive Dissonance, Either/Or Framing, Data Shock
+            // ═══════════════════════════════════════════════════════════════
+
+            "balance_progress_challenge": {
+                text: "Fortschritt?",
+                subtext: "30 Jahre nach dem Mauerfall. Was hat sich wirklich geändert? Die gleichen Eliten. Die gleichen Versprechen.",
+                visual: "chaos",
+                phase: "balance",
+                judo: "specificity_trap",
+                options: [
+                    { 
+                        label: "Nicht genug", 
+                        next: "balance_frustration_validate",
+                        statBoost: { rebellion: 15 },
+                        commitment: { type: "judgment", question: "insufficient_progress", weight: 0.8 }
+                    },
+                    { 
+                        label: "Einiges schon", 
+                        next: "path_expert_logic",
+                        profileSet: { valueAnchor: "pragmatist" },
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Wir wurden betrogen", 
+                        next: "hook",
+                        profileSet: { valueAnchor: "idealist" },
+                        statBoost: { rebellion: 20 },
+                        commitment: { type: "belief", question: "betrayed", weight: 1 }
+                    }
+                ]
+            },
+
+            "balance_frustration_validate": {
+                text: "Du bist nicht allein.",
+                subtext: "60% fühlen sich vom System nicht repräsentiert. Du bist die Mehrheit. Das ist keine Schwäche.",
+                visual: "clash",
+                phase: "balance",
+                judo: "bandwagon_pain",
+                options: [
+                    { 
+                        label: "Aber man hört nicht auf uns", 
+                        next: "path_powerless",
+                        statBoost: { empathy: 15 },
+                        commitment: { type: "attitudinal", question: "ignored", weight: 1 }
+                    },
+                    { 
+                        label: "Was tun?", 
+                        next: "hook",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "hook": {
+                text: "Das System funktioniert nicht zufällig schlecht.",
+                subtext: "Es ist so gebaut. Es spaltet uns absichtlich. Links gegen Rechts. Stadt gegen Land. Während die Eliten regieren.",
+                visual: "clash",
+                phase: "balance",
+                judo: "cognitive_dissonance",
+                options: [
+                    { 
+                        label: "Es spaltet uns", 
+                        next: "path_parties_start",
+                        statBoost: { empathy: 15 },
+                        commitment: { type: "attitudinal", question: "system_divides", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Die Eliten profitieren", 
+                        next: "elite_pyramid",
+                        statBoost: { rebellion: 20 },
+                        commitment: { type: "belief", question: "elite_benefit", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Wie lösen wir das?", 
+                        next: "intro_isonomia_logic",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "path_parties_start": {
+                text: "Parteien müssen sich unterscheiden.",
+                subtext: "Wenn sie nicht spalten, gewinnen sie keine Wahlen. Das ist das Paradoxon der repräsentativen Demokratie.",
+                visual: "clash",
+                phase: "balance",
+                judo: "either_or_framing",
+                options: [
+                    { 
+                        label: "Wir brauchen Einheit", 
+                        next: "nvc_validation_conflict",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "value", question: "unity", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Aber wer entscheidet dann?", 
+                        next: "path_expert_logic_alternative",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "nvc_validation_conflict": {
+                text: "Konflikt ist nicht das Problem.",
+                subtext: "Der Fehde-Modus ist das Problem. Wenn wir uns als Feinde sehen, können wir nicht gemeinsam denken.",
+                visual: "chaos",
+                phase: "balance",
+                judo: "reframing",
+                options: [
+                    { 
+                        label: "Mein Nachbar ist kein Feind", 
+                        next: "commitment_neighbor",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "value", question: "neighbor_not_enemy", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Aber die Ideologen?", 
+                        next: "commitment_neighbor_nuance",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "path_expert_logic": {
+                text: "Experten sind befangen.",
+                subtext: "Ein Ökonomie-Professor lebt in einer Welt, die 95% der Bevölkerung nicht kennt. Ist das repräsentativ?",
+                visual: "pyramid",
+                phase: "balance",
+                judo: "authority_test",
+                options: [
+                    { 
+                        label: "Nein - sie sind abgehoben", 
+                        next: "nvc_validation_expert",
+                        statBoost: { rebellion: 15 },
+                        commitment: { type: "belief", question: "experts_detached", weight: 1 }
+                    },
+                    { 
+                        label: "Aber Fachwissen?", 
+                        next: "path_expert_logic_nuance",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "path_expert_logic_alternative": {
+                text: "Wer entscheidet heute?",
+                subtext: "Wahlen entscheiden. Aber wer wird gewählt? Wer hat das Geld für Kampagnen? Wer kennt die richtigen Leute?",
+                visual: "pyramid",
+                phase: "balance",
+                judo: "satisfaction_probe",
+                options: [
+                    { 
+                        label: "Das ist ungerecht", 
+                        next: "commitment_fairness",
+                        statBoost: { empathy: 15 },
+                        commitment: { type: "value", question: "fairness", weight: 1 }
+                    },
+                    { 
+                        label: "Was wäre fairer?", 
+                        next: "path_expert_logic_nuance",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "path_expert_logic_nuance": {
+                text: "Fachwissen ist wichtig.",
+                subtext: "Aber: Wer entscheidet, WELCHES Fachwissen gehört? Wer prüft die Prüfer? Es braucht Kontrolle durch das Volk.",
+                visual: "grid",
+                phase: "balance",
+                judo: "system_analysis",
+                options: [
+                    { 
+                        label: "Stimmt - Checks & Balances", 
+                        next: "isonomia_oversight",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "judgment", question: "oversight_needed", weight: 0.8 }
+                    },
+                    { 
+                        label: "Aber wer kontrolliert die Kontrolleure?", 
+                        next: "commitment_trust",
+                        statBoost: { rebellion: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "nvc_validation_expert": {
+                text: "87% Akademiker. 20% Bevölkerung.",
+                subtext: "Mathematik der Ungerechtigkeit. Ein zufällig ausgeloster Nachbar wäre fairer. Ehrlich jetzt.",
+                visual: "pyramid",
+                phase: "balance",
+                judo: "data_shock",
+                options: [
+                    { 
+                        label: "Einverstanden - fairer", 
+                        next: "commitment_neighbor",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "judgment", question: "lottery_fairer", weight: 1, critical: true, honestyPrompt: true }
+                    },
+                    { 
+                        label: "Aber Kompetenz?", 
+                        next: "objection_qualification_handler",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "path_powerless": {
+                text: "Du wählst. Aber du entscheidest nicht.",
+                subtext: "Die Partei entscheidet nach der Wahl. Nicht du. Deine Stimme verschwindet im Nichts.",
+                visual: "tremble",
+                phase: "balance",
+                judo: "powerlessness_validation",
+                options: [
+                    { 
+                        label: "Ja - das ist frustrierend", 
+                        next: "commitment_fairness",
+                        statBoost: { empathy: 15 },
+                        commitment: { type: "attitudinal", question: "powerless_frustrating", weight: 1 }
+                    },
+                    { 
+                        label: "Gibt es eine Lösung?", 
+                        next: "intro_isonomia_logic",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 3: COMMITMENT-ESKALATION (Knoten 21-28)
+            // Micro-Commits, Concreteness, Honesty Prompts, Commitment Recognition
+            // ═══════════════════════════════════════════════════════════════
+
+            "commitment_neighbor": {
+                text: "Dein Nachbar wäre fairer.",
+                subtext: "Keine Partei-Auftrag. Keine Lobby-Kontakte. Nur: Ein Mensch. Ein Jahr. Dann wieder Bürger.",
+                visual: "grid",
+                phase: "commitment",
+                judo: "concreteness",
+                options: [
+                    { 
+                        label: "Das wäre fairer", 
+                        next: "commitment_fairness",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "judgment", question: "neighbor_fairer", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Aber die Ideologie?", 
+                        next: "commitment_neighbor_nuance",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Könnte funktionieren", 
+                        next: "commitment_temporal",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "micro", question: "possible", weight: 0.5 }
+                    }
+                ]
+            },
+
+            "commitment_neighbor_nuance": {
+                text: "Ideologie entsteht durch Parteien.",
+                subtext: "Ohne Parteien: Keine Whip-Positionen. Keine Fraktionszwänge. Nur Bürger, die diskutieren.",
+                visual: "grid",
+                phase: "commitment",
+                judo: "probability_comparison",
+                options: [
+                    { 
+                        label: "Wahrscheinlicher als heute", 
+                        next: "commitment_fairness",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "judgment", question: "better_probability", weight: 0.8 }
+                    },
+                    { 
+                        label: "Muss ich darüber nachdenken", 
+                        next: "commitment_knowledge_gap",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "commitment_fairness": {
+                text: "Fairness ist nicht links oder rechts.",
+                subtext: "Es ist menschlich. Wenn das System unfair ist, müssen wir es ändern. Ehrlich jetzt: Meinst du nicht auch?",
+                visual: "grid",
+                phase: "commitment",
+                judo: "honesty_prompt",
+                honestyPrompt: true,
+                options: [
+                    { 
+                        label: "Ja - ehrlich", 
+                        next: "commitment_trust",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "honesty", question: "fairness_agreement", weight: 1.5, critical: true, honestyPrompt: true }
+                    },
+                    { 
+                        label: "Theoretisch ja, praktisch?", 
+                        next: "objection_practicality_handler",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Nein, Status quo ist okay", 
+                        next: "exit_understanding",
+                        statBoost: {},
+                        commitment: { type: "honesty", question: "fairness_agreement", weight: 0, agreed: false }
+                    }
+                ]
+            },
+
+            "commitment_fairness_strong": {
+                text: "Du glaubst an Fairness.",
+                subtext: "Das ist dein Kernwert. Das System verrät diesen Wert. Willst du das akzeptieren oder ändern?",
+                visual: "grid",
+                phase: "commitment",
+                judo: "principle_extraction",
+                options: [
+                    { 
+                        label: "Ändern", 
+                        next: "commitment_trust",
+                        statBoost: { rebellion: 20, empathy: 15 },
+                        commitment: { type: "behavioral", question: "want_change", weight: 1.5, critical: true }
+                    },
+                    { 
+                        label: "Ich bin zufrieden", 
+                        next: "exit_understanding",
+                        statBoost: {},
+                        commitment: { type: "behavioral", question: "want_change", weight: 0, agreed: false }
+                    }
+                ]
+            },
+
+            "commitment_trust": {
+                text: "Vertrauen ist das Fundament.",
+                subtext: "Würdest du einem zufällig ausgelosten Bürger mehr vertrauen als einem karrierepolitiker? Ehrlich jetzt.",
+                visual: "grid",
+                phase: "commitment",
+                judo: "commitment_recognition",
+                options: [
+                    { 
+                        label: "Mehr vertrauen", 
+                        next: "commitment_trust_equal",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "trust", question: "trust_citizen_more", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Gleich viel", 
+                        next: "commitment_temporal",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "trust", question: "trust_citizen_more", weight: 0.5 }
+                    },
+                    { 
+                        label: "Weniger vertrauen", 
+                        next: "objection_qualification_handler",
+                        statBoost: { strategy: 10 },
+                        commitment: { type: "trust", question: "trust_citizen_more", weight: 0, agreed: false }
+                    }
+                ]
+            },
+
+            "commitment_trust_equal": {
+                text: "Wenn Vertrauen gleich ist...",
+                subtext: "Warum dann nicht das fairere System? Das, das wirklich repräsentiert? Das ist kein Wunschdenken. Das ist Logik.",
+                visual: "grid",
+                phase: "commitment",
+                judo: "cost_benefit_reframing",
+                options: [
+                    { 
+                        label: "Logisch richtig", 
+                        next: "intro_isonomia_logic",
+                        statBoost: { strategy: 20 },
+                        commitment: { type: "rational", question: "logic_agreement", weight: 1 }
+                    },
+                    { 
+                        label: "Aber der Übergang?", 
+                        next: "commitment_temporal",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "commitment_temporal": {
+                text: "Es braucht Zeit.",
+                subtext: "Rome wasn't built in a day. Aber: Jede Reise beginnt mit einem Schritt. Bist du bereit, diesen Schritt zu gehen?",
+                visual: "grid",
+                phase: "commitment",
+                judo: "temporal_security",
+                options: [
+                    { 
+                        label: "Ja - ich würde mitmachen", 
+                        next: "intro_isonomia_logic",
+                        statBoost: { rebellion: 20, empathy: 15, strategy: 15 },
+                        commitment: { type: "behavioral", question: "would_participate", weight: 1.5, critical: true }
+                    },
+                    { 
+                        label: "Erstmal nur informieren", 
+                        next: "commitment_knowledge_gap",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Nein, nicht bereit", 
+                        next: "exit_graceful",
+                        statBoost: {},
+                        commitment: { type: "behavioral", question: "would_participate", weight: 0, agreed: false }
+                    }
+                ]
+            },
+
+            "commitment_test_willing": {
+                text: "Ein Test wäre möglich.",
+                subtext: "Ein Stadtteil. Ein Jahr. Ein Experiment. Nicht die ganze Welt ändern - nur testen. Wärst du dabei?",
+                visual: "grid",
+                phase: "commitment",
+                judo: "pilot_proposal",
+                options: [
+                    { 
+                        label: "Ja - Experiment unterstützen", 
+                        next: "final_manifestation",
+                        statBoost: { rebellion: 15, strategy: 15 },
+                        commitment: { type: "behavioral", question: "support_pilot", weight: 1, critical: true }
+                    },
+                    { 
+                        label: "Theoretisch ja", 
+                        next: "commitment_knowledge_gap",
+                        statBoost: { strategy: 10 },
+                        commitment: { type: "micro", question: "interested_pilot", weight: 0.5 }
+                    }
+                ]
+            },
+
+            "commitment_knowledge_gap": {
+                text: "Wissen ist Macht.",
+                subtext: "Du willst mehr wissen. Das ist klug. Die Vault enthält alles: Bücher, Studien, Geschichte.",
+                visual: "breathe",
+                phase: "commitment",
+                judo: "information_offer",
+                options: [
+                    { 
+                        label: "Zur Vault", 
+                        next: "vault_books",
+                        statBoost: { strategy: 20 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Simulation ausprobieren", 
+                        next: "action_simulation",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 4: LÖSUNG & AKTION (Knoten 29-35)
+            // Vision Casting, Historical Legitimacy, Objection Resolution
+            // ═══════════════════════════════════════════════════════════════
+
+            "intro_isonomia_logic": {
+                text: "ISONOMIA: Die Lösung",
+                subtext: "Keine Politiker mehr. Keine Parteien. 500 Bürger. Ausgelost. Ein Jahr. Echte Repräsentation.",
+                visual: "grid",
+                phase: "solution",
+                judo: "vision_casting",
+                options: [
+                    { 
+                        label: "Wie funktioniert das?", 
+                        next: "isonomia_mechanism",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Hat das schonmal geklappt?", 
+                        next: "isonomia_legislation",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Ich bin bereit", 
+                        next: "final_manifestation",
+                        statBoost: { rebellion: 20, empathy: 20, strategy: 20 },
+                        commitment: { type: "behavioral", question: "ready_for_action", weight: 1.5, critical: true }
+                    }
+                ]
+            },
+
+            "isonomia_mechanism": {
+                text: "So funktioniert Sortition",
+                subtext: "1. Zufällige Auswahl aus dem Bevölkerungsregister. 2. Ein Jahr Entscheidungsgewalt. 3. Dann wieder Bürger.",
+                visual: "grid",
+                phase: "solution",
+                judo: "mechanism_explanation",
+                options: [
+                    { 
+                        label: "Kontrolle?", 
+                        next: "isonomia_oversight",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Gesetzesvorschläge?", 
+                        next: "isonomia_legislation",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Verstanden - machen wir", 
+                        next: "final_manifestation",
+                        statBoost: { rebellion: 15, strategy: 15 },
+                        commitment: { type: "understanding", question: "mechanism_clear", weight: 1 }
+                    }
+                ]
+            },
+
+            "isonomia_legislation": {
+                text: "Athen. 200 Jahre. Keine Wahlen.",
+                subtext: "Die langlebigste Demokratie der Geschichte war eine Losdemokratie. Das ist keine Theorie. Das ist Geschichte.",
+                visual: "grid",
+                phase: "solution",
+                judo: "historical_legitimacy",
+                options: [
+                    { 
+                        label: "Beeindruckend", 
+                        next: "isonomia_mechanism",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "micro", question: "impressed_history", weight: 0.5 }
+                    },
+                    { 
+                        label: "Moderne Anwendung?", 
+                        next: "commitment_test_willing",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Das ist die Lösung", 
+                        next: "final_manifestation",
+                        statBoost: { rebellion: 20, empathy: 15 },
+                        commitment: { type: "rational", question: "solution_accepted", weight: 1.5, critical: true }
+                    }
+                ]
+            },
+
+            "isonomia_oversight": {
+                text: "Checks & Balances",
+                subtext: "Die ausgelosten Bürger kontrollieren sich gegenseitig. Gesetze müssen verfassungskonform sein. Transparenz total.",
+                visual: "grid",
+                phase: "solution",
+                judo: "transparency",
+                options: [
+                    { 
+                        label: "Sicher genug", 
+                        next: "isonomia_legislation",
+                        statBoost: { strategy: 15 },
+                        commitment: { type: "trust", question: "oversight_sufficient", weight: 0.8 }
+                    },
+                    { 
+                        label: "Noch Fragen", 
+                        next: "objection_time_handler",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "final_manifestation": {
+                text: "Du hast einen Vertrag mit dir selbst.",
+                subtext: "Du hast zugestimmt: Das System ist unfair. Ein Nachbar wäre fairer. Du würdest mitmachen. Jetzt: Handle.",
+                visual: "grid",
+                phase: "action",
+                judo: "commitment_recognition",
+                options: [
+                    { 
+                        label: "Ich will mehr wissen", 
+                        next: "vault_books",
+                        statBoost: { strategy: 20 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Simulation ausprobieren", 
+                        next: "action_simulation",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Ich will teilen", 
+                        next: "action_share",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "behavioral", question: "will_share", weight: 1 }
+                    },
+                    { 
+                        label: "Ich bin bereit für mehr", 
+                        next: "action_community",
+                        statBoost: { rebellion: 25, empathy: 20 },
+                        commitment: { type: "behavioral", question: "ready_for_more", weight: 1.5, critical: true }
+                    }
+                ]
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 5: EINWAND-BEHANDLUNG (Knoten 36-40)
+            // ═══════════════════════════════════════════════════════════════
+
+            "objection_qualification_handler": {
+                text: "Qualifikation ist wichtig.",
+                subtext: UserProfile.valueAnchor === 'pragmatist' 
+                    ? "Wäre Deutschland 1949 qualifizierter mit Akademikern? Oder mit Weisheit?"
+                    : "Jeder Mensch hat ein Recht auf Mitsprache. Das ist die höchste Qualifikation.",
+                visual: "tremble",
+                phase: "objection",
+                judo: "objection_response",
+                objectionType: "qualification",
+                options: [
+                    { 
+                        label: "Gutes Argument", 
+                        next: "commitment_trust",
+                        statBoost: { empathy: 15 },
+                        commitment: null,
+                        resolveObjection: "qualification"
+                    },
+                    { 
+                        label: "Trotzdem skeptisch", 
+                        next: "commitment_knowledge_gap",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "objection_practicality_handler": {
+                text: "Pragmatismus ist Trumpf.",
+                subtext: "In Athen hat es 200 Jahre funktioniert. Was ist pragmatischer als bewährte Lösungen?",
+                visual: "tremble",
+                phase: "objection",
+                judo: "objection_response",
+                objectionType: "practicality",
+                options: [
+                    { 
+                        label: "Stimmt - Athen hat bewiesen", 
+                        next: "isonomia_legislation",
+                        statBoost: { strategy: 15 },
+                        commitment: null,
+                        resolveObjection: "practicality"
+                    },
+                    { 
+                        label: "Aber moderne Komplexität?", 
+                        next: "isonomia_mechanism",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "objection_corruption_handler": {
+                text: "Korruption braucht Zeit.",
+                subtext: "Ein Jahr Amtszeit. Dann wieder Bürger. Weniger Zeit für Korruption als heute, wo Politiker Jahrzehnte bleiben.",
+                visual: "tremble",
+                phase: "objection",
+                judo: "objection_response",
+                objectionType: "corruption",
+                options: [
+                    { 
+                        label: "Logisch", 
+                        next: "commitment_trust",
+                        statBoost: { strategy: 15 },
+                        commitment: null,
+                        resolveObjection: "corruption"
+                    },
+                    { 
+                        label: "Aber Bestechung?", 
+                        next: "isonomia_oversight",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "objection_time_handler": {
+                text: "Zeit ist relativ.",
+                subtext: "Ein Jahr statt vier. Keine Wahlkämpfe. Keine Koalitionsverhandlungen. Weniger Zeitaufwand, mehr Entscheidung.",
+                visual: "tremble",
+                phase: "objection",
+                judo: "objection_response",
+                objectionType: "time",
+                options: [
+                    { 
+                        label: "Effizienter als heute", 
+                        next: "isonomia_legislation",
+                        statBoost: { strategy: 15 },
+                        commitment: null,
+                        resolveObjection: "time"
+                    },
+                    { 
+                        label: "Muss darüber nachdenken", 
+                        next: "commitment_knowledge_gap",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+            "objection_extremism_handler": {
+                text: "Extrem ist das Gegenteil.",
+                subtext: "Das System das uns 200 Jahre trug, ist nicht radikal. Es ist bewährt. Was ist extremer: Losentscheide oder 87% Akademiker?",
+                visual: "clash",
+                phase: "objection",
+                judo: "objection_response",
+                objectionType: "extremism",
+                options: [
+                    { 
+                        label: "Stimmt - Athen war Zivilisation", 
+                        next: "isonomia_legislation",
+                        statBoost: { empathy: 15 },
+                        commitment: null,
+                        resolveObjection: "extremism"
+                    },
+                    { 
+                        label: "Trotzdem Sorge", 
+                        next: "isonomia_oversight",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    }
+                ]
+            },
+
+
+            // ═══════════════════════════════════════════════════════════════
+            // PHASE 6: EXIT-STRATEGIEN (Knoten 41-45)
+            // Graceful Exit, Future Door Open, Seed Planting
+            // ═══════════════════════════════════════════════════════════════
+
+            "exit_graceful": {
+                text: "Vollkommen in Ordnung.",
+                subtext: "Niemand sollte gezwungen werden, über politische Systeme nachzudenken. Wenn du jemals neugierig wirst, ist dieser Ort hier. Bis dahin: Bleib gesund.",
+                visual: "breathe",
+                phase: "exit",
+                judo: "graceful_exit",
+                options: [
+                    { 
+                        label: "Neustart", 
+                        next: "start",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "exit_understanding": {
+                text: "Zufriedenheit ist legitim.",
+                subtext: "Wenn du mit dem System zufrieden bist, wer sind wir, das in Frage zu stellen? Deine Reise endet hier - mit Respekt.",
+                visual: "breathe",
+                phase: "exit",
+                judo: "respect_exit",
+                options: [
+                    { 
+                        label: "Neustart", 
+                        next: "start",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "exit_conservative": {
+                text: "Konservativ sein ist legitim.",
+                subtext: "'Bewahren' bedeutet nicht 'stillstehen'. Du bewahrst, was funktioniert. Das ist eine ehrenwerte Position.",
+                visual: "breathe",
+                phase: "exit",
+                judo: "respect_conservative",
+                options: [
+                    { 
+                        label: "Neustart", 
+                        next: "start",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "commitment_rejection_handle": {
+                text: "Kein Problem.",
+                subtext: "Nicht heute. Aber vielleicht bald. Die Tür bleibt offen. Was müsste passieren, damit du umdenkst?",
+                visual: "breathe",
+                phase: "exit",
+                judo: "future_door_open",
+                options: [
+                    { 
+                        label: "Mehr Beweise", 
+                        next: "vault_books",
+                        statBoost: { strategy: 10 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Ein erfolgreiches Beispiel", 
+                        next: "commitment_test_willing",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Neustart", 
+                        next: "start",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            // ═══════════════════════════════════════════════════════════════
+            // AKTIONS-KNOTEN
+            // ═══════════════════════════════════════════════════════════════
+
+            "vault_books": {
+                text: "Die Bibliothek des Wissens",
+                subtext: "Hier findest du alles: Van Reybrouck's 'Gegen Wahlen', Sortition Foundation Studies, historische Analysen. Wissen ist Macht.",
+                visual: "breathe",
+                phase: "action",
+                judo: "deep_dive",
+                options: [
+                    { 
+                        label: "Simulation ausprobieren", 
+                        next: "action_simulation",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Teilen", 
+                        next: "action_share",
+                        statBoost: { empathy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Zurück", 
+                        next: "final_manifestation",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "action_simulation": {
+                text: "Das Los entscheidet",
+                subtext: "Erlebe Sortition hautnah. 12 zufällige Bürger. Ihre Geschichten. Ihre Entscheidungen. Fair. Transparent. Real.",
+                visual: "grid",
+                phase: "action",
+                judo: "experiential_learning",
+                options: [
+                    { 
+                        label: "Los ziehen", 
+                        action: "startSimulation",
+                        statBoost: { strategy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Zurück", 
+                        next: "final_manifestation",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "action_share": {
+                text: "Teilen ist Multiplizieren",
+                subtext: "Wenn diese Idee dich bewegt hat, teile sie. Nicht um zu überzeugen - sondern um zu informieren. Jeder hat das Recht zu wissen.",
+                visual: "breathe",
+                phase: "action",
+                judo: "social_proof",
+                options: [
+                    { 
+                        label: "Link kopieren", 
+                        action: "shareLink",
+                        statBoost: { empathy: 20 },
+                        commitment: { type: "behavioral", question: "shared", weight: 1 }
+                    },
+                    { 
+                        label: "Social Media", 
+                        action: "shareSocial",
+                        statBoost: { empathy: 25 },
+                        commitment: { type: "behavioral", question: "shared_social", weight: 1.5 }
+                    },
+                    { 
+                        label: "Zurück", 
+                        next: "final_manifestation",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            "action_community": {
+                text: "Willkommen im Nexus",
+                subtext: "Du bist bereit. Die Community wartet. Sortition Foundation. Democracy Festivals. Lokale Initiativen. Du bist nicht allein.",
+                visual: "grid",
+                phase: "action",
+                judo: "community_belonging",
+                options: [
+                    { 
+                        label: "Mehr erfahren", 
+                        action: "openCommunity",
+                        statBoost: { rebellion: 20, empathy: 20 },
+                        commitment: { type: "behavioral", question: "joined_community", weight: 2 }
+                    },
+                    { 
+                        label: "Teilen", 
+                        next: "action_share",
+                        statBoost: { empathy: 15 },
+                        commitment: null
+                    },
+                    { 
+                        label: "Neustart", 
+                        next: "start",
+                        statBoost: {},
+                        commitment: null
+                    }
+                ]
+            },
+
+            // Redirect-Knoten für Abwärtskompatibilität
+            "elite_pyramid": {
+                redirect: "nvc_validation_expert"
+            },
+            
+            "solution_realm": {
+                redirect: "intro_isonomia_logic"
+            },
+            
+            "action_nexus": {
+                redirect: "final_manifestation"
+            }
+        };
+
+        // ==================================================================
+        // OPTIMIZED PARTICLE SYSTEM (Shader-Based)
+        // Reduces draw calls from 8000 to 1
+        // ==================================================================
+        const OptimizedParticleSystem = {
+            MAX_PARTICLES: 8000,
+            particles: null,
+            geometry: null,
+            material: null,
+            
+            init(scene) {
+                // BufferGeometry für maximale Performance
+                this.geometry = new THREE.BufferGeometry();
+                
+                const positions = new Float32Array(this.MAX_PARTICLES * 3);
+                const colors = new Float32Array(this.MAX_PARTICLES * 3);
+                const sizes = new Float32Array(this.MAX_PARTICLES);
+                const phases = new Float32Array(this.MAX_PARTICLES);
+                
+                // Initialisierung
+                for (let i = 0; i < this.MAX_PARTICLES; i++) {
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos((Math.random() * 2) - 1);
+                    const r = 5 + Math.random() * 15;
+                    
+                    positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+                    positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                    positions[i * 3 + 2] = r * Math.cos(phi);
+                    
+                    const color = new THREE.Color();
+                    color.setHSL(0.5 + Math.random() * 0.1, 0.8, 0.5);
+                    colors[i * 3] = color.r;
+                    colors[i * 3 + 1] = color.g;
+                    colors[i * 3 + 2] = color.b;
+                    
+                    sizes[i] = Math.random() * 2 + 0.5;
+                    phases[i] = Math.random() * Math.PI * 2;
+                }
+                
+                this.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                this.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                this.geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+                this.geometry.setAttribute('phase', new THREE.BufferAttribute(phases, 1));
+                
+                // ShaderMaterial für GPU-basierte Animation
+                this.material = new THREE.ShaderMaterial({
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uColor1: { value: new THREE.Color(0x00f5d4) },
+                        uColor2: { value: new THREE.Color(0xff6b9d) }
+                    },
+                    vertexShader: `
+                        attribute float size;
+                        attribute float phase;
+                        varying vec3 vColor;
+                        uniform float uTime;
+                        
+                        void main() {
+                            vColor = color;
+                            
+                            // GPU-basierte Animation
+                            vec3 pos = position;
+                            float wave = sin(uTime * 0.5 + phase) * 0.15;
+                            pos.y += wave;
+                            pos.x += cos(uTime * 0.3 + phase) * 0.1;
+                            
+                            // Rotation
+                            float angle = uTime * 0.05 + phase * 0.5;
+                            float x = pos.x * cos(angle) - pos.z * sin(angle);
+                            float z = pos.x * sin(angle) + pos.z * cos(angle);
+                            pos.x = x;
+                            pos.z = z;
+                            
+                            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+                            gl_PointSize = size * (300.0 / -mvPosition.z);
+                            gl_Position = projectionMatrix * mvPosition;
+                        }
+                    `,
+                    fragmentShader: `
+                        varying vec3 vColor;
+                        
+                        void main() {
+                            // Kreisförmige Partikel mit Soft Edge
+                            float dist = distance(gl_PointCoord, vec2(0.5));
+                            if (dist > 0.5) discard;
+                            
+                            float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+                            gl_FragColor = vec4(vColor, alpha * 0.8);
+                        }
+                    `,
+                    transparent: true,
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                
+                this.particles = new THREE.Points(this.geometry, this.material);
+                scene.add(this.particles);
+                
+                console.log('✓ Optimized Particle System: 1 draw call for 8000 particles');
+            },
+            
+            update(time) {
+                if (this.material) {
+                    this.material.uniforms.uTime.value = time * 0.001;
+                }
+            },
+            
+            dispose() {
+                this.geometry?.dispose();
+                this.material?.dispose();
+                if (this.particles) {
+                    this.particles.parent?.remove(this.particles);
+                }
+            }
+        };
+
+        // ==================================================================
+        // MODUL 6: Journey (Haupt-Controller mit 3D-Integration)
+        // ==================================================================
         const Journey = {
             scene: null,
             camera: null,
             renderer: null,
-            composer: null,
+            currentNodeId: null,
             currentStation: 0,
             isTransitioning: false,
             audioEnabled: true,
@@ -487,144 +2597,47 @@
             mousePos: { x: 0, y: 0 },
             collected: new Set(),
             
-            // AI-Profil System
-            profile: {
-                rebellion: 0,
-                empathy: 0,
-                strategy: 0,
-                path: [],
-                decisions: []
+            // Station-Mapping für 3D-Positionen
+            stationMapping: {
+                'start': 0, 'profiling_curiosity': 0, 'profiling_skeptic': 0, 
+                'profiling_skeptic_trust': 0, 'profiling_value_engaged': 0,
+                'profiling_value_casual': 0, 'profiling_value_avoidant': 0,
+                'profiling_skeptic_system': 0,
+                
+                'balance_progress_challenge': 1, 'balance_frustration_validate': 1,
+                'hook': 1, 'path_parties_start': 1, 'nvc_validation_conflict': 1,
+                'path_expert_logic': 1, 'path_expert_logic_alternative': 1,
+                'path_expert_logic_nuance': 1, 'nvc_validation_expert': 1,
+                'path_powerless': 1,
+                
+                'commitment_neighbor': 2, 'commitment_neighbor_nuance': 2,
+                'commitment_fairness': 2, 'commitment_fairness_strong': 2,
+                'commitment_trust': 2, 'commitment_trust_equal': 2,
+                'commitment_temporal': 2, 'commitment_test_willing': 2,
+                'commitment_knowledge_gap': 2,
+                
+                'intro_isonomia_logic': 3, 'isonomia_mechanism': 3,
+                'isonomia_legislation': 3, 'isonomia_oversight': 3,
+                
+                'objection_qualification_handler': 4, 'objection_practicality_handler': 4,
+                'objection_corruption_handler': 4, 'objection_time_handler': 4,
+                'objection_extremism_handler': 4,
+                
+                'final_manifestation': 5, 'vault_books': 5, 'action_simulation': 5,
+                'action_share': 5, 'action_community': 5,
+                
+                'exit_graceful': 6, 'exit_understanding': 6, 'exit_conservative': 6,
+                'commitment_rejection_handle': 6
             },
-
-            // Dynamische Text-Variationen (KI-generiert)
-            textVariations: {
-                system_chaos: {
-                    high_rebellion: "Du siehst das System als das Monster, das es ist. Die Maschinerie der Macht, die uns alle zermalmt.",
-                    high_empathy: "Du fühlst den Schmerz Millionen Menschen, die vom System vergessen wurden. Das bricht dein Herz.",
-                    high_strategy: "Du analysieras das System kalt und präzise. Jeder Bug, jede Schwachstelle ist sichtbar.",
-                    default: "Das System funktioniert nicht zufällig schlecht. Es ist so gebaut."
-                },
-                fear_vortex: {
-                    high_rebellion: "Die Angst treibt dich an. Du wirst nicht tatenlos zusehen, wie alles zusammenbricht.",
-                    high_empathy: "Die Angst um andere quält dich. Was wird aus den Schwachen, wenn die Demokratie fällt?",
-                    high_strategy: "Du siehst die Kaskade des Kollaps. Schritt für Schritt. Berechnend. Kalt.",
-                    default: "AfD. Klimakollaps. Krieg. Aber was, wenn das System selbst die Krise schafft?"
-                },
-                solution_realm: {
-                    high_rebellion: "Sortition ist deine Waffe. Die Revolution durch das Los. Elegant. Unaufhaltsam.",
-                    high_empathy: "Sortition gibt jedem eine Stimme. Endlich. Echte Gleichheit. Echte Teilhabe.",
-                    high_strategy: "Sortition optimiert Entscheidungsfindung. Keine Partei-Blockaden mehr. Nur Logik.",
-                    default: "Athen. 200 Jahre. Keine Wahlen. 500 Bürger. Ausgelost. Wahre Repräsentation."
-                }
-            },
-
-            archetypes: [
-                { name: "Der Wächter", threshold: { empathy: 70 }, desc: "Du schützt die Schwachen" },
-                { name: "Der Revolutionär", threshold: { rebellion: 70 }, desc: "Du zerstörst das Alte" },
-                { name: "Der Architekt", threshold: { strategy: 70 }, desc: "Du baust das Neue" },
-                { name: "Der Voyager", threshold: {}, desc: "Du erkundest alle Pfade" },
-                { name: "Der Katalysator", threshold: { rebellion: 40, empathy: 40 }, desc: "Du vereinst Gegensätze" }
-            ],
-
-            blobShapes: [
-                'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
-                'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
-                'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
-                'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
-            ],
-
+            
             stationData: [
-                {
-                    id: 'awakening',
-                    position: { x: 0, y: 0, z: 0 },
-                    title: 'Das Erwachen',
-                    text: 'Du stehst am Anfang. Vor dir liegt ein Pfad durch die Dimensionen der Demokratie.',
-                    color: '#00f5d4',
-                    soundFreq: 110,
-                    collectible: 'wisdom',
-                    statBoost: { rebellion: 10, empathy: 10, strategy: 10 },
-                    portals: [
-                        { label: 'System-Frust', target: 'system_chaos', color: '#ff6b9d', stat: 'rebellion' },
-                        { label: 'Machtlosigkeit', target: 'power_void', color: '#00f5d4', stat: 'empathy' },
-                        { label: 'Zukunfts-Angst', target: 'fear_vortex', color: '#ffd700', stat: 'strategy' }
-                    ]
-                },
-                {
-                    id: 'system_chaos',
-                    position: { x: 0, y: 0, z: -100 },
-                    title: 'Das Chaos',
-                    text: 'dynamic',
-                    color: '#ff6b9d',
-                    soundFreq: 146.83,
-                    collectible: 'truth',
-                    statBoost: { rebellion: 25 },
-                    portals: [
-                        { label: 'Elite-Pyramide', target: 'elite_pyramid', color: '#ffffff', stat: 'strategy' },
-                        { label: 'Lösung', target: 'solution_realm', color: '#00f5d4', stat: 'empathy' }
-                    ]
-                },
-                {
-                    id: 'power_void',
-                    position: { x: 100, y: 0, z: -50 },
-                    title: 'Die Leere',
-                    text: 'Deine Stimme verschwindet im Nichts. Du wählst, aber du entscheidest nicht.',
-                    color: '#00f5d4',
-                    soundFreq: 196,
-                    collectible: 'courage',
-                    statBoost: { empathy: 25 },
-                    portals: [
-                        { label: 'Lösung', target: 'solution_realm', color: '#00f5d4', stat: 'rebellion' }
-                    ]
-                },
-                {
-                    id: 'fear_vortex',
-                    position: { x: -100, y: 0, z: -50 },
-                    title: 'Der Strudel',
-                    text: 'dynamic',
-                    color: '#ffd700',
-                    soundFreq: 261.63,
-                    collectible: 'hope',
-                    statBoost: { strategy: 25 },
-                    portals: [
-                        { label: 'Lösung', target: 'solution_realm', color: '#00f5d4', stat: 'rebellion' }
-                    ]
-                },
-                {
-                    id: 'elite_pyramid',
-                    position: { x: 0, y: 50, z: -200 },
-                    title: 'Die Pyramide',
-                    text: '87% Akademiker. 20% Bevölkerung. Mathematik der Ungerechtigkeit.',
-                    color: '#ffffff',
-                    soundFreq: 329.63,
-                    statBoost: { strategy: 20, rebellion: 10 },
-                    portals: [
-                        { label: 'Lösung', target: 'solution_realm', color: '#00f5d4', stat: 'strategy' }
-                    ]
-                },
-                {
-                    id: 'solution_realm',
-                    position: { x: 0, y: 0, z: -300 },
-                    title: 'Das Reich des Loses',
-                    text: 'dynamic',
-                    color: '#00f5d4',
-                    soundFreq: 392,
-                    statBoost: { empathy: 15, rebellion: 15, strategy: 15 },
-                    portals: [
-                        { label: 'Handeln', target: 'action_nexus', color: '#ffd700', stat: 'strategy' }
-                    ]
-                },
-                {
-                    id: 'action_nexus',
-                    position: { x: 0, y: 0, z: -400 },
-                    title: 'Der Nexus',
-                    text: 'dynamic_end',
-                    color: '#ffd700',
-                    soundFreq: 440,
-                    statBoost: {},
-                    portals: [
-                        { label: 'Neustart', target: 'awakening', color: '#00f5d4', stat: 'empathy' }
-                    ]
-                }
+                { id: 'awakening', position: { x: 0, y: 0, z: 0 }, color: '#00f5d4', soundFreq: 110, collectible: 'wisdom' },
+                { id: 'system_chaos', position: { x: 0, y: 0, z: -100 }, color: '#ff6b9d', soundFreq: 146.83, collectible: 'truth' },
+                { id: 'power_void', position: { x: 100, y: 0, z: -50 }, color: '#00f5d4', soundFreq: 196, collectible: 'courage' },
+                { id: 'solution_realm', position: { x: 0, y: 0, z: -300 }, color: '#00f5d4', soundFreq: 392 },
+                { id: 'elite_pyramid', position: { x: 0, y: 50, z: -200 }, color: '#ffffff', soundFreq: 329.63 },
+                { id: 'action_nexus', position: { x: 0, y: 0, z: -400 }, color: '#ffd700', soundFreq: 440 },
+                { id: 'fear_vortex', position: { x: -100, y: 0, z: -50 }, color: '#ffd700', soundFreq: 261.63, collectible: 'hope' }
             ],
 
             init() {
@@ -633,10 +2646,503 @@
                 this.initAudio();
                 this.setupMouseInteraction();
                 this.setupPostProcessing();
-                this.setupUI();
+                this.setupEventListeners();
                 this.animateLoading();
+                
+                // Session laden
+                const saved = Storage.load();
+                if (saved) {
+                    this.currentNodeId = saved.currentStep;
+                    // Profil wiederherstellen
+                    if (saved.profile) {
+                        Object.assign(UserProfile, saved.profile);
+                    }
+                }
             },
 
+            setupEventListeners() {
+                // EventBus-Subscriptions
+                EventBus.on('commitment:added', (data) => {
+                    this.updateCommitmentUI(data);
+                });
+                
+                EventBus.on('profile:updated', (data) => {
+                    this.updateProfileUI();
+                });
+                
+                EventBus.on('objection:raised', (data) => {
+                    this.showObjection(data.objectionType);
+                });
+                
+                EventBus.on('objection:resolved', (data) => {
+                    this.hideObjection();
+                });
+            },
+
+            updateCommitmentUI(data) {
+                const fill = document.getElementById('commitment-fill');
+                const count = document.getElementById('commitment-count');
+                const dots = document.querySelectorAll('.commitment-dot');
+                const panel = document.getElementById('commitment-panel');
+                
+                // Dramatische Fill-Animation mit Spring
+                if (fill) {
+                    anime({
+                        targets: fill,
+                        width: data.score + '%',
+                        duration: 800,
+                        easing: 'spring(1, 60, 12, 0)'
+                    });
+                }
+                
+                if (count) {
+                    // Count-Up Animation
+                    const oldCount = parseInt(count.textContent) || 0;
+                    const newCount = data.count;
+                    if (newCount > oldCount) {
+                        anime({
+                            targets: count,
+                            scale: [1, 1.5, 1],
+                            color: ['#fff', '#00f5d4', '#fff'],
+                            duration: 600,
+                            easing: 'easeOutElastic(1, .5)'
+                        });
+                    }
+                    count.textContent = `${data.count}/7`;
+                }
+                
+                // Aktiviere Dots mit Stagger
+                dots.forEach((dot, index) => {
+                    if (index < data.count && !dot.classList.contains('active')) {
+                        dot.classList.add('active');
+                        // Pulse Animation für neu aktivierte Dots
+                        anime({
+                            targets: dot,
+                            scale: [0, 1.3, 1],
+                            duration: 500,
+                            delay: index * 50,
+                            easing: 'spring(1, 80, 10, 0)'
+                        });
+                    }
+                });
+                
+                // Panel Pulse bei kritischem Commitment
+                if (panel && data.score > 50) {
+                    anime({
+                        targets: panel,
+                        boxShadow: [
+                            '0 0 20px rgba(0,245,212,0.2)',
+                            '0 0 40px rgba(0,245,212,0.6)',
+                            '0 0 20px rgba(0,245,212,0.2)'
+                        ],
+                        borderColor: ['rgba(0,245,212,0.3)', '#00f5d4', 'rgba(0,245,212,0.3)'],
+                        duration: 1000,
+                        easing: 'easeOutExpo'
+                    });
+                }
+                
+                // Panel anzeigen
+                panel?.classList.add('visible');
+            },
+
+            updateProfileUI() {
+                const summary = UserProfile.getSummary();
+                
+                document.getElementById('stat-engagement').textContent = summary.engagementLevel || '-';
+                document.getElementById('stat-skepticism').textContent = summary.skepticismType || '-';
+                document.getElementById('stat-value').textContent = summary.valueAnchor || '-';
+                document.getElementById('stat-rebellion').textContent = summary.rebellion + '%';
+                document.getElementById('stat-empathy').textContent = summary.empathy + '%';
+                document.getElementById('stat-strategy').textContent = summary.strategy + '%';
+                
+                document.getElementById('bar-rebellion').style.width = summary.rebellion + '%';
+                document.getElementById('bar-empathy').style.width = summary.empathy + '%';
+                document.getElementById('bar-strategy').style.width = summary.strategy + '%';
+                
+                const archetype = UserProfile.determineArchetype();
+                document.getElementById('archetype').innerHTML = 
+                    `<strong>${archetype.name}</strong><br><small>${archetype.desc}</small>`;
+                
+                document.getElementById('profile-panel')?.classList.add('visible');
+            },
+
+            showObjection(objectionType) {
+                const panel = document.getElementById('objection-panel');
+                const text = document.getElementById('objection-text');
+                
+                if (panel && text) {
+                    const response = ObjectionHandler.getResponse(objectionType, UserProfile);
+                    if (response) {
+                        text.textContent = response;
+                        panel.classList.add('visible');
+                    }
+                }
+            },
+
+            hideObjection() {
+                document.getElementById('objection-panel')?.classList.remove('visible');
+            },
+
+            navigateToNode(nodeId) {
+                if (this.isTransitioning) return;
+                
+                // Redirects behandeln
+                const node = narrativeData[nodeId];
+                if (node && node.redirect) {
+                    nodeId = node.redirect;
+                }
+                
+                this.isTransitioning = true;
+                this.currentNodeId = nodeId;
+                
+                // Profil aktualisieren
+                UserProfile.recordNodeVisit(nodeId);
+                
+                // Speichern
+                Storage.save(nodeId, UserProfile.pathTaken);
+                
+                // Einwand prüfen
+                const objection = ObjectionHandler.detectObjection(narrativeData[nodeId]?.text);
+                if (objection) {
+                    UserProfile.recordObjection(objection);
+                }
+                
+                // 3D-Station bestimmen
+                const stationIndex = this.stationMapping[nodeId] || 0;
+                
+                // Motion Blur
+                document.getElementById('motion-blur').style.opacity = '0.8';
+                
+                // Transition
+                anime.timeline({
+                    complete: () => {
+                        document.getElementById('motion-blur').style.opacity = '0';
+                        this.showNode(nodeId);
+                        this.isTransitioning = false;
+                    }
+                })
+                .add({
+                    targets: '.station-title .char',
+                    translateY: [0, -100],
+                    rotateX: [0, 45],
+                    opacity: [1, 0],
+                    filter: ['blur(0px)', 'blur(10px)'],
+                    delay: anime.stagger(20, { from: 'last' }),
+                    duration: 600,
+                    easing: 'easeInOutExpo'
+                })
+                .add({
+                    targets: '.portal-wrapper',
+                    scale: [1, 0.8, 0],
+                    opacity: [1, 0],
+                    rotateY: [0, -15],
+                    delay: anime.stagger(50, { from: 'last' }),
+                    duration: 500,
+                    easing: 'spring(1, 80, 12, 0)'
+                }, '-=400');
+                
+                // Kamera bewegen
+                if (this.camera && stationIndex < this.stationData.length) {
+                    const station = this.stationData[stationIndex];
+                    anime({
+                        targets: this.camera.position,
+                        x: station.position.x,
+                        y: station.position.y,
+                        z: station.position.z + 40,
+                        duration: 2500,
+                        easing: 'spring(0.8, 50, 8, 0)',
+                        complete: () => {
+                            // Subtle camera drift for life-like feeling
+                            anime({
+                                targets: this.camera.position,
+                                y: station.position.y + 2,
+                                duration: 4000,
+                                direction: 'alternate',
+                                loop: true,
+                                easing: 'easeInOutSine'
+                            });
+                        }
+                    });
+                }
+                
+                this.currentStation = stationIndex;
+            },
+
+            showNode(nodeId) {
+                const node = narrativeData[nodeId];
+                if (!node) return;
+                
+                const ui = document.getElementById('ui-layer');
+                ui.innerHTML = '';
+                
+                const stationIndex = this.stationMapping[nodeId] || 0;
+                const station = this.stationData[stationIndex];
+                
+                // Container
+                const textContainer = document.createElement('div');
+                textContainer.className = 'station-text';
+                
+                // Titel
+                const title = document.createElement('h1');
+                title.className = 'station-title';
+                title.style.color = station?.color || '#00f5d4';
+                
+                const displayText = node.text;
+                displayText.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.className = 'char';
+                    span.textContent = char === ' ' ? '\u00A0' : char;
+                    title.appendChild(span);
+                });
+                
+                // Untertitel
+                const subtitle = document.createElement('p');
+                subtitle.className = 'station-subtitle';
+                if (node.objectionType) {
+                    subtitle.classList.add('ai-generated');
+                }
+                subtitle.textContent = node.subtext || '';
+                
+                textContainer.appendChild(title);
+                textContainer.appendChild(subtitle);
+                ui.appendChild(textContainer);
+                
+                // Optionen
+                if (node.options) {
+                    const portalContainer = document.createElement('div');
+                    portalContainer.className = 'portal-container';
+                    
+                    node.options.forEach((opt, i) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'portal-wrapper';
+                        wrapper.style.color = station?.color || '#00f5d4';
+                        
+                        // Commitment-Indikator
+                        if (opt.commitment) {
+                            wrapper.setAttribute('data-commitment', opt.commitment.type);
+                            const indicator = document.createElement('div');
+                            indicator.className = 'portal-commitment-indicator';
+                            indicator.textContent = opt.commitment.type === 'yes' ? '✓' : '?';
+                            wrapper.appendChild(indicator);
+                        }
+                        
+                        // Honesty Prompt Styling
+                        if (opt.commitment?.honestyPrompt || node.honestyPrompt) {
+                            wrapper.classList.add('honesty-prompt');
+                        }
+                        
+                        const label = document.createElement('span');
+                        label.className = 'portal-label';
+                        label.textContent = opt.label;
+                        wrapper.appendChild(label);
+                        
+                        // Click Handler
+                        wrapper.addEventListener('click', () => {
+                            this.handleOptionClick(opt, nodeId);
+                        });
+                        
+                        portalContainer.appendChild(wrapper);
+                    });
+                    
+                    ui.appendChild(portalContainer);
+                }
+                
+                // Animationen
+                requestAnimationFrame(() => {
+                    textContainer.classList.add('active');
+                    
+                    anime({
+                        targets: '.station-title .char',
+                        translateY: [100, 0],
+                        rotateX: [-90, 0],
+                        opacity: [0, 1],
+                        delay: anime.stagger(35, { 
+                            from: 'center',
+                            grid: [5, 5],
+                            axis: 'x'
+                        }),
+                        duration: 1400,
+                        easing: 'spring(1, 80, 10, 0)'
+                    });
+                    
+                    anime({
+                        targets: '.station-subtitle',
+                        translateY: [30, 0],
+                        opacity: [0, 1],
+                        duration: 1000,
+                        delay: 700,
+                        easing: 'easeOutExpo',
+                        complete: () => {
+                            // Subtle continuous pulse for subtitle
+                            anime({
+                                targets: '.station-subtitle',
+                                textShadow: [
+                                    '0 2px 20px rgba(0,0,0,0.5)',
+                                    '0 2px 30px rgba(0,245,212,0.3)',
+                                    '0 2px 20px rgba(0,0,0,0.5)'
+                                ],
+                                duration: 3000,
+                                loop: true,
+                                easing: 'easeInOutSine'
+                            });
+                        }
+                    });
+                    
+                    anime({
+                        targets: '.portal-wrapper',
+                        scale: [0, 1],
+                        opacity: [0, 1],
+                        delay: anime.stagger(150, { start: 900 }),
+                        duration: 1200,
+                        easing: 'spring(1, 60, 8, 0)',
+                        complete: (anim) => {
+                            // Add hover pulse effect after entrance
+                            document.querySelectorAll('.portal-wrapper').forEach((portal, i) => {
+                                portal.addEventListener('mouseenter', () => {
+                                    anime({
+                                        targets: portal,
+                                        scale: 1.08,
+                                        duration: 300,
+                                        easing: 'spring(1, 120, 12, 0)'
+                                    });
+                                });
+                                portal.addEventListener('mouseleave', () => {
+                                    anime({
+                                        targets: portal,
+                                        scale: 1,
+                                        duration: 300,
+                                        easing: 'spring(1, 120, 12, 0)'
+                                    });
+                                });
+                            });
+                        }
+                    });
+                });
+                
+                // Audio
+                if (station) {
+                    this.playStationSound(station.soundFreq);
+                    
+                    // Collectible
+                    if (station.collectible) {
+                        this.collectItem(station.collectible);
+                    }
+                }
+                
+                // Progress
+                this.updateProgress();
+                
+                // Profile-UI aktualisieren
+                this.updateProfileUI();
+            },
+
+            handleOptionClick(option, currentNodeId) {
+                // Profil-Updates
+                if (option.profileSet) {
+                    for (const [key, value] of Object.entries(option.profileSet)) {
+                        UserProfile.set(key, value);
+                    }
+                }
+                
+                // Legacy Stats
+                if (option.statBoost) {
+                    UserProfile.updateLegacyStats(option.statBoost);
+                }
+                
+                // Commitment tracking
+                if (option.commitment) {
+                    const agreed = option.commitment.agreed !== false;
+                    UserProfile.addCommitment(
+                        currentNodeId, 
+                        agreed, 
+                        option.commitment.question
+                    );
+                    
+                    // Kritische Commitments hervorheben
+                    if (option.commitment.critical && agreed) {
+                        this.createCommitmentEffect();
+                    }
+                }
+                
+                // Einwand auflösen
+                if (option.resolveObjection) {
+                    UserProfile.resolveObjection(option.resolveObjection);
+                }
+                
+                // Aktionen
+                if (option.action) {
+                    this.handleAction(option.action);
+                }
+                
+                // Navigation
+                if (option.next) {
+                    this.navigateToNode(option.next);
+                }
+            },
+
+            createCommitmentEffect() {
+                // Visuelles Feedback für kritische Commitments
+                const panel = document.getElementById('commitment-panel');
+                if (panel) {
+                    panel.classList.add('commitment-highlight');
+                    setTimeout(() => panel.classList.remove('commitment-highlight'), 1000);
+                }
+            },
+
+            handleAction(action) {
+                switch(action) {
+                    case 'startSimulation':
+                        this.startSimulation();
+                        break;
+                    case 'shareLink':
+                        this.shareLink();
+                        break;
+                    case 'shareSocial':
+                        this.shareSocial();
+                        break;
+                    case 'openCommunity':
+                        alert('Community-Link würde hier geöffnet werden: sortitionfoundation.org');
+                        break;
+                }
+            },
+
+            startSimulation() {
+                // Einfache Simulation
+                const names = ['Maria', 'Hans', 'Fatima', 'Klaus', 'Lisa', 'Ahmet', 'Sophie', 'Wolfgang'];
+                const jobs = ['Krankenschwester', 'Bauarbeiter', 'Lehrerin', 'Ingenieur', 'Verkäuferin', 'Student', 'Rentner', 'Künstler'];
+                
+                const citizen = {
+                    name: names[Math.floor(Math.random() * names.length)],
+                    job: jobs[Math.floor(Math.random() * jobs.length)],
+                    age: Math.floor(Math.random() * 40) + 25
+                };
+                
+                alert(`🎲 LOS GEZOGEN 🎲\n\nName: ${citizen.name}\nAlter: ${citizen.age}\nBeruf: ${citizen.job}\n\nDiese Person würde für ein Jahr im Parlament sitzen und über Gesetze entscheiden.`);
+            },
+
+            shareLink() {
+                const url = window.location.href.split('?')[0] + '?step=' + this.currentNodeId;
+                navigator.clipboard?.writeText(url);
+                alert('Link kopiert: ' + url);
+            },
+
+            shareSocial() {
+                const text = "Ich habe gerade etwas über Sortition Democracy (Losdemokratie) gelernt. Faszinierend!";
+                const url = window.location.href;
+                window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+            },
+
+            updateProgress() {
+                const progress = Math.min(100, (UserProfile.commitments.filter(c => c.agreed).length / 7) * 100);
+                anime({
+                    targets: '#progress-fill',
+                    width: `${progress}%`,
+                    duration: 800,
+                    easing: 'easeOutExpo'
+                });
+            },
+
+            // 3D- und Audio-Methoden (wie im Original)
             createScene() {
                 this.scene = new THREE.Scene();
                 this.scene.fog = new THREE.FogExp2(0x000000, 0.0015);
@@ -658,57 +3164,10 @@
                 window.addEventListener('resize', () => this.onResize());
             },
 
-            setupPostProcessing() {
-                // Chromatic Aberration Canvas Setup
-                this.chromaticCanvas = document.getElementById('chromatic-canvas');
-                this.chromaticCtx = this.chromaticCanvas.getContext('2d');
-                this.chromaticCanvas.width = window.innerWidth;
-                this.chromaticCanvas.height = window.innerHeight;
-            },
-
             createParticles() {
-                const geometry = new THREE.BufferGeometry();
-                const count = 8000;
-                const positions = new Float32Array(count * 3);
-                const colors = new Float32Array(count * 3);
-                const sizes = new Float32Array(count);
-
-                for (let i = 0; i < count; i++) {
-                    const i3 = i * 3;
-                    const t = i / count;
-                    
-                    const angle = t * Math.PI * 20;
-                    const radius = 30 + t * 400;
-                    
-                    positions[i3] = Math.cos(angle) * radius + (Math.random() - 0.5) * 200;
-                    positions[i3 + 1] = (Math.random() - 0.5) * 300;
-                    positions[i3 + 2] = Math.sin(angle * 0.5) * 200 - t * 600;
-
-                    const color = new THREE.Color();
-                    const hue = 0.45 + (Math.random() - 0.5) * 0.15;
-                    color.setHSL(hue, 0.9, 0.4 + Math.random() * 0.4);
-                    colors[i3] = color.r;
-                    colors[i3 + 1] = color.g;
-                    colors[i3 + 2] = color.b;
-
-                    sizes[i] = Math.random() * 4 + 0.5;
-                }
-
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-                geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-                const material = new THREE.PointsMaterial({
-                    size: 3,
-                    vertexColors: true,
-                    transparent: true,
-                    opacity: 0.95,
-                    blending: THREE.AdditiveBlending,
-                    sizeAttenuation: true
-                });
-
-                this.particleSystem = new THREE.Points(geometry, material);
-                this.scene.add(this.particleSystem);
+                // Use OptimizedParticleSystem for better performance
+                OptimizedParticleSystem.init(this.scene);
+                this.particleSystem = OptimizedParticleSystem.particles;
             },
 
             initAudio() {
@@ -727,7 +3186,6 @@
                 });
                 this.oscillators = [];
 
-                // Haupt-Drone
                 const osc = this.audioContext.createOscillator();
                 const gain = this.audioContext.createGain();
                 const filter = this.audioContext.createBiquadFilter();
@@ -741,7 +3199,6 @@
                 
                 gain.gain.value = 0.03;
                 
-                // LFO für Bewegung
                 const lfo = this.audioContext.createOscillator();
                 const lfoGain = this.audioContext.createGain();
                 lfo.frequency.value = 0.1;
@@ -763,11 +3220,9 @@
                     this.mousePos.x = (e.clientX / window.innerWidth) * 2 - 1;
                     this.mousePos.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-                    // Chromatic Aberration basierend auf Mausbewegung
                     const speed = Math.abs(e.movementX) + Math.abs(e.movementY);
                     this.applyChromaticAberration(speed);
 
-                    // Parallax
                     if (this.camera && !this.isTransitioning) {
                         const targetX = this.mousePos.x * 8;
                         const targetY = this.mousePos.y * 8;
@@ -781,132 +3236,112 @@
                 });
             },
 
+            setupPostProcessing() {
+                this.chromaticCanvas = document.getElementById('chromatic-canvas');
+                this.chromaticCtx = this.chromaticCanvas.getContext('2d');
+                this.chromaticCanvas.width = window.innerWidth;
+                this.chromaticCanvas.height = window.innerHeight;
+            },
+
             applyChromaticAberration(intensity) {
                 const canvas = this.chromaticCanvas;
                 const ctx = this.chromaticCtx;
                 
-                // Clear mit Fade
                 ctx.fillStyle = 'rgba(0,0,0,0.1)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 if (intensity < 2) return;
                 
-                // Zeichne chromatische Splitter
                 const offset = Math.min(intensity * 2, 20);
                 
                 ctx.globalCompositeOperation = 'screen';
                 
-                // Roter Kanal
                 ctx.fillStyle = 'rgba(255,0,0,0.1)';
                 ctx.fillRect(Math.random() * offset, Math.random() * offset, canvas.width, canvas.height);
                 
-                // Blauer Kanal
                 ctx.fillStyle = 'rgba(0,100,255,0.1)';
                 ctx.fillRect(-Math.random() * offset, -Math.random() * offset, canvas.width, canvas.height);
                 
-                // Vignette verstärken bei Bewegung
                 const vignette = document.getElementById('vignette');
                 vignette.style.opacity = Math.min(intensity / 50, 0.8);
             },
 
             createClickExplosion(x, y) {
                 const colors = ['#00f5d4', '#ff6b9d', '#ffd700', '#ffffff'];
+                const particleCount = 25; // Mehr Partikel
                 
-                for (let i = 0; i < 20; i++) {
+                // Haupt-Explosion
+                for (let i = 0; i < particleCount; i++) {
                     const particle = document.createElement('div');
+                    const size = Math.random() * 10 + 4;
                     particle.style.cssText = `
                         position: fixed;
                         left: ${x}px;
                         top: ${y}px;
-                        width: ${Math.random() * 8 + 4}px;
-                        height: ${Math.random() * 8 + 4}px;
+                        width: ${size}px;
+                        height: ${size}px;
                         background: ${colors[Math.floor(Math.random() * colors.length)]};
                         border-radius: 50%;
                         pointer-events: none;
                         z-index: 999;
-                        box-shadow: 0 0 20px currentColor;
+                        box-shadow: 0 0 ${size * 3}px currentColor;
                     `;
                     document.body.appendChild(particle);
 
-                    const angle = (i / 20) * Math.PI * 2 + Math.random() * 0.5;
-                    const distance = 80 + Math.random() * 150;
+                    const angle = (i / particleCount) * Math.PI * 2 + Math.random() * 0.5;
+                    const distance = 100 + Math.random() * 200;
+                    const duration = 600 + Math.random() * 800;
 
                     anime({
                         targets: particle,
                         translateX: Math.cos(angle) * distance,
                         translateY: Math.sin(angle) * distance,
-                        scale: [1, 0],
-                        opacity: [1, 0],
-                        rotate: Math.random() * 360,
-                        duration: 800 + Math.random() * 600,
-                        easing: 'easeOutExpo',
+                        scale: [1, 0.5, 0],
+                        opacity: [1, 0.8, 0],
+                        rotate: Math.random() * 720 - 360,
+                        duration: duration,
+                        easing: 'spring(1, 50, 10, 0)',
                         complete: () => particle.remove()
                     });
                 }
+                
+                // Ring-Explosion (sekundärer Effekt)
+                for (let i = 0; i < 8; i++) {
+                    const ring = document.createElement('div');
+                    ring.style.cssText = `
+                        position: fixed;
+                        left: ${x}px;
+                        top: ${y}px;
+                        width: 20px;
+                        height: 20px;
+                        border: 2px solid ${colors[i % colors.length]};
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 998;
+                        transform: translate(-50%, -50%);
+                    `;
+                    document.body.appendChild(ring);
+                    
+                    anime({
+                        targets: ring,
+                        width: 150,
+                        height: 150,
+                        opacity: [0.8, 0],
+                        borderWidth: [3, 0],
+                        duration: 800,
+                        delay: i * 50,
+                        easing: 'easeOutExpo',
+                        complete: () => ring.remove()
+                    });
+                }
 
-                // Motion Blur Flash
                 const blur = document.getElementById('motion-blur');
-                blur.style.opacity = '0.5';
-                setTimeout(() => blur.style.opacity = '0', 100);
-            },
-
-            // AI-System
-            updateProfile(stat, amount) {
-                this.profile[stat] = Math.min(100, this.profile[stat] + amount);
-                this.profile.path.push(this.currentStation);
-                
-                // Update UI
-                document.getElementById(`stat-${stat}`).textContent = this.profile[stat] + '%';
-                document.getElementById(`bar-${stat}`).style.width = this.profile[stat] + '%';
-                
-                // Bestimme Archetyp
-                this.determineArchetype();
-                
-                // Zeige Panel
-                document.getElementById('profile-panel').classList.add('visible');
-            },
-
-            determineArchetype() {
-                let bestMatch = this.archetypes[3]; // Default: Voyager
-                let bestScore = -1;
-                
-                this.archetypes.forEach(arch => {
-                    let score = 0;
-                    let thresholds = 0;
-                    
-                    for (let stat in arch.threshold) {
-                        thresholds++;
-                        if (this.profile[stat] >= arch.threshold[stat]) {
-                            score++;
-                        }
-                    }
-                    
-                    if (thresholds > 0 && score === thresholds && score > bestScore) {
-                        bestScore = score;
-                        bestMatch = arch;
-                    }
+                anime({
+                    targets: blur,
+                    opacity: [0, 0.3, 0],
+                    duration: 200,
+                    easing: 'easeOutQuad'
                 });
-                
-                document.getElementById('archetype').innerHTML = 
-                    `<strong>${bestMatch.name}</strong><br><small>${bestMatch.desc}</small>`;
-            },
-
-            getDynamicText(stationId) {
-                const variations = this.textVariations[stationId];
-                if (!variations) return null;
-                
-                // Finde höchsten Stat
-                let maxStat = 'default';
-                let maxValue = 0;
-                
-                ['rebellion', 'empathy', 'strategy'].forEach(stat => {
-                    if (this.profile[stat] > maxValue && this.profile[stat] > 30) {
-                        maxValue = this.profile[stat];
-                        maxStat = 'high_' + stat;
-                    }
-                });
-                
-                return variations[maxStat] || variations.default;
             },
 
             collectItem(id) {
@@ -917,7 +3352,6 @@
                 if (el) {
                     el.classList.add('collected');
                     
-                    // Sound
                     if (this.audioEnabled && this.audioContext) {
                         const osc = this.audioContext.createOscillator();
                         const gain = this.audioContext.createGain();
@@ -934,264 +3368,75 @@
             },
 
             animateLoading() {
+                // Verbesserte Loading-Animation mit Elastic-Easing
                 anime({
                     targets: '#loading-path',
-                    d: this.blobShapes,
+                    d: [
+                        'M50,10 C70,10 90,30 90,50 C90,70 70,90 50,90 C30,90 10,70 10,50 C10,30 30,10 50,10',
+                        'M40,20 C60,5 85,25 85,50 C85,75 60,95 40,80 C20,95 5,70 5,50 C5,30 20,5 40,20',
+                        'M50,5 C75,15 95,35 85,60 C95,80 75,95 50,85 C25,95 5,80 15,60 C5,35 25,15 50,5',
+                        'M30,30 C50,10 80,20 80,50 C80,80 50,90 30,70 C10,90 0,60 10,50 C0,40 10,10 30,30'
+                    ],
                     duration: 2000,
-                    easing: 'easeInOutQuad',
+                    easing: 'spring(1, 80, 12, 0)',
                     direction: 'alternate',
                     loop: true
                 });
+                
+                // Pulsierender Glow-Effekt
+                anime({
+                    targets: '#loading-path',
+                    strokeWidth: [2, 4, 2],
+                    stroke: ['#00f5d4', '#ffd700', '#00f5d4'],
+                    duration: 1500,
+                    loop: true,
+                    easing: 'easeInOutSine'
+                });
+                
+                // Loading-Text Fade
+                anime({
+                    targets: '.loading-text',
+                    opacity: [0.5, 1, 0.5],
+                    letterSpacing: ['0.4em', '0.6em', '0.4em'],
+                    duration: 2000,
+                    loop: true,
+                    easing: 'easeInOutQuad'
+                });
 
                 setTimeout(() => {
-                    document.getElementById('loading').classList.add('hidden');
-                    this.showStation(0);
-                    this.animate();
+                    // Smooth Exit-Animation
+                    anime({
+                        targets: '#loading',
+                        opacity: [1, 0],
+                        scale: [1, 1.1],
+                        duration: 800,
+                        easing: 'easeOutExpo',
+                        complete: () => {
+                            document.getElementById('loading').classList.add('hidden');
+                            
+                            // Start-Node anzeigen
+                            const startNode = this.currentNodeId || 'start';
+                            this.showNode(startNode);
+                            this.currentNodeId = startNode;
+                            
+                            this.animate();
+                        }
+                    });
                 }, 2500);
             },
 
             animate() {
                 requestAnimationFrame(() => this.animate());
                 
-                const time = Date.now() * 0.001;
+                const time = Date.now();
                 
-                // Particle Wave
-                if (this.particleSystem) {
-                    const positions = this.particleSystem.geometry.attributes.position.array;
-                    
-                    for (let i = 0; i < 200; i++) {
-                        const idx = Math.floor(Math.random() * 2000);
-                        const i3 = idx * 3;
-                        const originalY = positions[i3 + 1];
-                        positions[i3 + 1] = originalY + Math.sin(time * 2 + idx * 0.1) * 2;
-                    }
-                    
-                    this.particleSystem.geometry.attributes.position.needsUpdate = true;
-                    this.particleSystem.rotation.y += 0.0002;
-                }
+                // Use optimized shader-based particle system
+                OptimizedParticleSystem.update(time);
 
-                // Chromatic Fade
                 this.chromaticCtx.fillStyle = 'rgba(0,0,0,0.05)';
                 this.chromaticCtx.fillRect(0, 0, this.chromaticCanvas.width, this.chromaticCanvas.height);
 
                 this.renderer.render(this.scene, this.camera);
-            },
-
-            showStation(index) {
-                if (index < 0 || index >= this.stationData.length) return;
-                
-                this.currentStation = index;
-                const data = this.stationData[index];
-                
-                // Stats boost
-                if (data.statBoost) {
-                    for (let stat in data.statBoost) {
-                        this.updateProfile(stat, data.statBoost[stat]);
-                    }
-                }
-                
-                // Collectible
-                if (data.collectible) {
-                    this.collectItem(data.collectible);
-                }
-                
-                // Audio
-                this.playStationSound(data.soundFreq);
-                
-                // UI
-                this.updateUI(data);
-                this.updateProgress();
-
-                // Camera
-                anime({
-                    targets: this.camera.position,
-                    x: data.position.x,
-                    y: data.position.y,
-                    z: data.position.z + 40,
-                    duration: 2000,
-                    easing: 'easeOutElastic(1, .7)'
-                });
-            },
-
-            updateUI(data) {
-                const ui = document.getElementById('ui-layer');
-                ui.innerHTML = '';
-
-                const textContainer = document.createElement('div');
-                textContainer.className = 'station-text';
-
-                const title = document.createElement('h1');
-                title.className = 'station-title';
-                title.style.color = data.color;
-                
-                data.title.split('').forEach(char => {
-                    const span = document.createElement('span');
-                    span.className = 'char';
-                    span.textContent = char === ' ' ? '\u00A0' : char;
-                    title.appendChild(span);
-                });
-
-                const subtitle = document.createElement('p');
-                subtitle.className = 'station-subtitle';
-                
-                // Dynamic Text
-                let displayText = data.text;
-                if (data.text === 'dynamic') {
-                    displayText = this.getDynamicText(data.id) || 'Default text';
-                    subtitle.classList.add('ai-generated');
-                } else if (data.text === 'dynamic_end') {
-                    // End-Text basierend auf Profil
-                    const dominant = Object.entries(this.profile)
-                        .filter(([k,v]) => ['rebellion','empathy','strategy'].includes(k))
-                        .sort((a,b) => b[1] - a[1])[0];
-                    
-                    const endTexts = {
-                        rebellion: "Die Revolution beginnt mit dir. Zerstöre das Alte. Baue das Neue.",
-                        empathy: "Dein Herz führt dich. Schütze die Schwachen. Heile die Welt.",
-                        strategy: "Dein Verstand ist scharf. Plane jeden Schritt. Siege durch Klugheit."
-                    };
-                    displayText = endTexts[dominant[0]] || "Deine Reise hat erst begonnen.";
-                    subtitle.classList.add('ai-generated');
-                }
-                
-                subtitle.textContent = displayText;
-
-                textContainer.appendChild(title);
-                textContainer.appendChild(subtitle);
-                ui.appendChild(textContainer);
-
-                if (data.portals) {
-                    const portalContainer = document.createElement('div');
-                    portalContainer.className = 'portal-container';
-
-                    data.portals.forEach((portal, i) => {
-                        const wrapper = document.createElement('div');
-                        wrapper.className = 'portal-wrapper';
-                        wrapper.style.color = portal.color;
-                        
-                        const glow = document.createElement('div');
-                        glow.className = 'portal-glow';
-                        
-                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                        svg.className = 'portal-svg';
-                        svg.setAttribute('viewBox', '0 0 100 100');
-                        
-                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                        path.className = 'portal-shape';
-                        path.setAttribute('d', this.blobShapes[0]);
-                        
-                        svg.appendChild(path);
-                        
-                        const label = document.createElement('span');
-                        label.className = 'portal-label';
-                        label.textContent = portal.label;
-
-                        wrapper.appendChild(glow);
-                        wrapper.appendChild(svg);
-                        wrapper.appendChild(label);
-                        
-                        wrapper.addEventListener('click', () => {
-                            if (portal.stat) {
-                                this.updateProfile(portal.stat, 10);
-                            }
-                            this.travelToStation(portal.target);
-                        });
-                        
-                        portalContainer.appendChild(wrapper);
-
-                        anime({
-                            targets: path,
-                            d: [this.blobShapes[1], this.blobShapes[2], this.blobShapes[3], this.blobShapes[0]],
-                            duration: 6000 + i * 1500,
-                            easing: 'easeInOutQuad',
-                            direction: 'alternate',
-                            loop: true,
-                            delay: i * 400
-                        });
-                    });
-
-                    ui.appendChild(portalContainer);
-                }
-
-                requestAnimationFrame(() => {
-                    textContainer.classList.add('active');
-
-                    anime({
-                        targets: '.station-title .char',
-                        translateY: [100, 0],
-                        rotateX: [-90, 0],
-                        opacity: [0, 1],
-                        delay: anime.stagger(35, { from: 'center' }),
-                        duration: 1400,
-                        easing: 'easeOutElastic(1, .6)'
-                    });
-
-                    anime({
-                        targets: '.station-subtitle',
-                        translateY: [30, 0],
-                        opacity: [0, 1],
-                        duration: 1000,
-                        delay: 700,
-                        easing: 'easeOutExpo'
-                    });
-
-                    anime({
-                        targets: '.portal-wrapper',
-                        scale: [0, 1],
-                        opacity: [0, 1],
-                        delay: anime.stagger(150, { start: 900 }),
-                        duration: 1200,
-                        easing: 'easeOutElastic(1, .5)'
-                    });
-                });
-            },
-
-            updateProgress() {
-                const progress = ((this.currentStation + 1) / this.stationData.length) * 100;
-                
-                anime({
-                    targets: '#progress-fill',
-                    width: `${progress}%`,
-                    duration: 800,
-                    easing: 'easeOutExpo'
-                });
-            },
-
-            travelToStation(stationId) {
-                if (this.isTransitioning) return;
-                
-                const targetIndex = this.stationData.findIndex(s => s.id === stationId);
-                if (targetIndex === -1) return;
-                
-                this.isTransitioning = true;
-
-                // Motion Blur für Transition
-                document.getElementById('motion-blur').style.opacity = '0.8';
-
-                anime.timeline({
-                    complete: () => {
-                        document.getElementById('motion-blur').style.opacity = '0';
-                        this.showStation(targetIndex);
-                        this.isTransitioning = false;
-                    }
-                })
-                .add({
-                    targets: '.station-title .char',
-                    translateY: [0, -150],
-                    rotateX: [0, 90],
-                    opacity: [1, 0],
-                    delay: anime.stagger(25, { from: 'last' }),
-                    duration: 500,
-                    easing: 'easeInExpo'
-                })
-                .add({
-                    targets: '.portal-wrapper',
-                    scale: [1, 0],
-                    opacity: [1, 0],
-                    delay: anime.stagger(40, { from: 'last' }),
-                    duration: 400,
-                    easing: 'easeInBack'
-                }, '-=300');
             },
 
             toggleAudio() {
@@ -1203,12 +3448,14 @@
                     this.oscillators?.forEach(osc => {
                         try { osc.stop(); } catch(e) {}
                     });
-                } else {
-                    this.playStationSound(this.stationData[this.currentStation].soundFreq);
+                } else if (this.currentStation !== undefined) {
+                    const station = this.stationData[this.currentStation];
+                    if (station) this.playStationSound(station.soundFreq);
                 }
             },
 
             onResize() {
+                if (!this.camera || !this.renderer) return;
                 this.camera.aspect = window.innerWidth / window.innerHeight;
                 this.camera.updateProjectionMatrix();
                 this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1217,7 +3464,183 @@
             }
         };
 
+        // Journey starten
         Journey.init();
+
+        // ==================================================================
+        // Performance Monitoring
+        // ==================================================================
+        const PerformanceMonitor = {
+            init() {
+                this.logMemory();
+                setInterval(() => this.logMemory(), 30000);
+            },
+            
+            logMemory() {
+                if (Journey.renderer?.info) {
+                    const info = Journey.renderer.info;
+                    console.log('=== PERFORMANCE STATUS ===');
+                    console.log('Geometries:', info.memory.geometries);
+                    console.log('Textures:', info.memory.textures);
+                    console.log('Draw Calls:', info.render.calls);
+                    console.log('Triangles:', info.render.triangles);
+                    console.log('==========================');
+                }
+            }
+        };
+
+        // Debounce utility
+        const debounce = (fn, delay) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn(...args), delay);
+            };
+        };
+
+        // Apply debounced resize handler
+        window.addEventListener('resize', debounce(() => {
+            if (Journey.camera && Journey.renderer) {
+                Journey.camera.aspect = window.innerWidth / window.innerHeight;
+                Journey.camera.updateProjectionMatrix();
+                Journey.renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        }, 250));
+
+        // Initialize performance monitoring
+        PerformanceMonitor.init();
+
+        // ==================================================================
+        // Memory Management
+        // ==================================================================
+        const MemoryManager = {
+            disposeGeometry(geometry) {
+                if (geometry) geometry.dispose();
+            },
+            
+            disposeMaterial(material) {
+                if (!material) return;
+                if (Array.isArray(material)) {
+                    material.forEach(m => this.disposeMaterial(m));
+                } else {
+                    Object.keys(material).forEach(key => {
+                        const value = material[key];
+                        if (value && value.isTexture) {
+                            value.dispose();
+                        }
+                    });
+                    material.dispose();
+                }
+            },
+            
+            disposeMesh(mesh) {
+                if (!mesh) return;
+                this.disposeGeometry(mesh.geometry);
+                this.disposeMaterial(mesh.material);
+                if (mesh.parent) {
+                    mesh.parent.remove(mesh);
+                }
+            }
+        };
+
+        // ==================================================================
+        // WEB WORKER FOR PHYSICS (Deferred loading)
+        // ==================================================================
+        const PhysicsWorkerManager = {
+            worker: null,
+            isSupported: typeof Worker !== 'undefined',
+            
+            init() {
+                if (!this.isSupported) {
+                    console.log('Web Workers not supported, using main thread');
+                    return;
+                }
+                
+                // Create inline worker
+                const workerScript = `
+                    self.onmessage = function(e) {
+                        const { positions, velocities, count, type } = e.data;
+                        
+                        if (type === 'update') {
+                            for (let i = 0; i < count; i++) {
+                                const idx = i * 3;
+                                positions[idx] += velocities[idx] * 0.016;
+                                positions[idx + 1] += velocities[idx + 1] * 0.016;
+                                positions[idx + 2] += velocities[idx + 2] * 0.016;
+                                
+                                // Boundary check
+                                if (Math.abs(positions[idx]) > 50) velocities[idx] *= -1;
+                                if (Math.abs(positions[idx + 1]) > 50) velocities[idx + 1] *= -1;
+                                if (Math.abs(positions[idx + 2]) > 50) velocities[idx + 2] *= -1;
+                            }
+                            
+                            self.postMessage({ positions, velocities, type: 'updated' });
+                        }
+                    };
+                `;
+                
+                const blob = new Blob([workerScript], { type: 'application/javascript' });
+                this.worker = new Worker(URL.createObjectURL(blob));
+                
+                this.worker.onmessage = (e) => {
+                    EventBus.emit('physics:updated', e.data);
+                };
+                
+                console.log('✓ Physics Worker initialized');
+            },
+            
+            update(positions, velocities, count) {
+                if (!this.worker) {
+                    // Fallback to main thread
+                    return null;
+                }
+                
+                this.worker.postMessage({
+                    positions,
+                    velocities,
+                    count,
+                    type: 'update'
+                });
+                
+                return true;
+            },
+            
+            terminate() {
+                this.worker?.terminate();
+                this.worker = null;
+            }
+        };
+
+        // Initialize worker after page load
+        window.addEventListener('load', () => {
+            setTimeout(() => PhysicsWorkerManager.init(), 1000);
+        });
+        
+        // ==================================================================
+        // SERVICE WORKER REGISTRATION (PWA)
+        // ==================================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✓ Service Worker registered:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('✓ New version available');
+                                    // Optional: Show update notification
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('✗ Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
